@@ -94,21 +94,68 @@
         .task-instruction { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 500; }
         [data-theme="dark"] .task-instruction { background: #14532d; border-color: #166534; color: #bbf7d0; }
 
-        .certificate { border: 10px double var(--primary); padding: 40px; text-align: center; background: #fff; color: #1e293b; position: relative; }
-        .certificate h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; font-family: 'Georgia', serif; }
-        .certificate h3 { font-size: 1.5rem; margin: 20px 0; color: var(--dark); }
-        .certificate .student-name { font-size: 2rem; font-weight: bold; border-bottom: 2px solid var(--dark); display: inline-block; padding: 0 20px 5px; margin: 10px 0; }
-        .certificate .qr-container { margin-top: 30px; display: flex; justify-content: center; align-items: center; gap: 20px; }
-        .certificate .qr-text { text-align: left; font-size: 0.9rem; color: var(--gray); }
+        /* --- PREMIUM CERTIFICATE STYLES --- */
+        .certificate-container { 
+            max-width: 900px; 
+            margin: 40px auto; 
+            background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%); 
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .certificate { 
+            position: relative; background: #ffffff; padding: 60px 50px; text-align: center; color: #1e293b;
+            border: 3px solid #2563eb; border-radius: 8px; overflow: hidden;
+        }
+        .certificate::before {
+            content: ''; position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 2px solid #2563eb; border-radius: 4px; pointer-events: none;
+        }
+        .certificate::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 100% 0%, rgba(37, 99, 235, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(37, 99, 235, 0.1) 0%, transparent 30%);
+            pointer-events: none;
+        }
+        .certificate-logo { width: 80px; height: 80px; margin: 0 auto 20px; display: block; }
+        .certificate h1 { font-size: 2.8rem; color: #2563eb; margin-bottom: 10px; font-family: 'Georgia', serif; font-weight: 700; letter-spacing: 1px; position: relative; z-index: 1; }
+        .certificate-subtitle { font-size: 1.1rem; color: #64748b; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 30px; font-weight: 600; position: relative; z-index: 1; }
+        .certificate .certify-text { font-size: 1.2rem; margin-top: 20px; color: #475569; position: relative; z-index: 1; }
+        .certificate .student-name { font-size: 2.5rem; font-weight: bold; color: #1e293b; border-bottom: 3px solid #2563eb; display: inline-block; padding: 10px 40px 15px; margin: 20px 0; font-family: 'Georgia', serif; position: relative; z-index: 1; }
+        .certificate h3 { font-size: 1.8rem; margin: 25px 0; color: #2563eb; font-family: 'Georgia', serif; position: relative; z-index: 1; }
+        .certificate .completion-date { font-size: 1.1rem; color: #64748b; margin: 20px 0; position: relative; z-index: 1; }
+        .certificate .qr-container { 
+            margin-top: 40px; display: flex; justify-content: center; align-items: center; gap: 30px;
+            background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; position: relative; z-index: 1;
+        }
+        .certificate .qr-text { text-align: left; font-size: 0.95rem; color: #475569; line-height: 1.6; }
+        .certificate .qr-text strong { color: #1e293b; font-size: 1.05rem; display: block; margin-bottom: 5px; }
+        .certificate-signature { margin-top: 50px; display: flex; justify-content: space-around; align-items: flex-end; position: relative; z-index: 1; }
+        .signature-block { text-align: center; min-width: 200px; }
+        .signature-image { width: 150px; height: 60px; object-fit: contain; margin-bottom: 10px; }
+        .signature-line { border-top: 2px solid #1e293b; padding-top: 10px; margin-top: 10px; }
+        .signature-name { font-weight: bold; font-size: 1.1rem; color: #1e293b; margin: 0; }
+        .signature-title { font-size: 0.9rem; color: #64748b; margin: 5px 0 0; }
+        .certificate-id { margin-top: 30px; font-size: 0.85rem; color: #94a3b8; font-family: 'Courier New', monospace; position: relative; z-index: 1; }
 
         @media (max-width: 768px) {
             .lms-card { padding: 20px; }
             .code-editor-wrapper { grid-template-columns: 1fr; }
-            .certificate { padding: 20px; }
-            .certificate h1 { font-size: 1.8rem; }
-            .certificate .student-name { font-size: 1.5rem; }
-            .certificate .qr-container { flex-direction: column; text-align: center; }
+            .certificate-container { padding: 10px; }
+            .certificate { padding: 30px 20px; }
+            .certificate h1 { font-size: 2rem; }
+            .certificate .student-name { font-size: 1.8rem; padding: 10px 20px 15px; }
+            .certificate h3 { font-size: 1.4rem; }
+            .certificate .qr-container { flex-direction: column; text-align: center; padding: 20px; }
             .certificate .qr-text { text-align: center; }
+            .certificate-signature { flex-direction: column; gap: 30px; }
+        }
+        @media print {
+            .certificate-container { box-shadow: none; margin: 0; padding: 0; }
+            .btn { display: none !important; }
         }
     </style>
 </head>
@@ -126,7 +173,6 @@
     </header>
 
     <div class="container">
-        
         <!-- VIEW 1: LOGIN -->
         <div id="view-login" class="lms-view active">
             <div class="lms-card" style="max-width: 400px; margin: 40px auto;">
@@ -208,17 +254,14 @@
                         <h4>👨‍🏫 Instructor's Note for Day <span id="teacher-note-day">1</span></h4>
                         <p id="teacher-note-text"></p>
                     </div>
-
                     <div class="external-link-box">
                         <h3>📖 Launch External Classroom</h3>
                         <p>Open today's curated lesson from our partner platforms.</p>
                         <a id="external-lesson-link" href="#" target="_blank" class="btn btn-success" style="max-width: 300px; display: inline-block; margin-top: 0;">Open Today's Lesson ↗</a>
                     </div>
-
                     <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin: 20px 0;">
                         <p style="color: #166534; font-weight: 600;">✅ Pass the theory quiz AND the practical coding challenge to unlock tomorrow's module.</p>
                     </div>
-
                     <button class="btn" onclick="showView('view-quiz')">📝 Step 1: Take Daily Theory Quiz</button>
                 </div>
 
@@ -258,9 +301,7 @@
             <div class="lms-card">
                 <h2>💻 Practical Coding Challenge: Day <span id="practical-day">1</span></h2>
                 <p style="color: var(--gray); margin-bottom: 20px;">Write your code in the editor on the left. Watch it render live on the right!</p>
-                
                 <div class="task-instruction" id="practical-instruction"></div>
-
                 <div class="code-editor-wrapper">
                     <div class="editor-pane">
                         <div class="pane-header">
@@ -277,7 +318,6 @@
                         <div id="preview-frame" class="preview-frame"></div>
                     </div>
                 </div>
-
                 <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
                     <button class="btn btn-success" style="flex: 1; min-width: 200px;" onclick="submitPracticalCode()">✅ Submit & Validate Code</button>
                     <button class="btn btn-outline" style="flex: 1; min-width: 200px;" onclick="showView('view-dashboard')">Back to Dashboard</button>
@@ -301,30 +341,51 @@
 
         <!-- VIEW 8: CERTIFICATE -->
         <div id="view-certificate" class="lms-view">
-            <div class="certificate">
-                <h1>ABN Technologies Academy</h1>
-                <p style="font-size: 1.2rem; margin-top: 10px;">This is to certify that</p>
-                <div class="student-name" id="cert-name">Student Name</div>
-                <p style="font-size: 1.2rem; margin-top: 10px;">has successfully completed the 60-day intensive training for</p>
-                <h3>Master Web Development</h3>
-                <p style="margin-top: 20px;">Awarded on: <span id="cert-date"></span></p>
-                <div class="qr-container">
-                    <div id="qrcode"></div>
-                    <div class="qr-text">
-                        <strong>Verify Authenticity</strong><br>
-                        Scan QR or visit<br>
-                        abn-tech.com/verify?id=<span id="cert-id"></span>
+            <div class="certificate-container">
+                <div class="certificate" id="certificate-node">
+                    <img src="favicon.svg" alt="ABN Technologies" class="certificate-logo">
+                    <h1>Certificate of Completion</h1>
+                    <p class="certificate-subtitle">ABN Technologies Academy</p>
+                    <p class="certify-text">This is to certify that</p>
+                    <div class="student-name" id="cert-name">Student Name</div>
+                    <p class="certify-text">has successfully completed the 60-day intensive training program and passed the final examination for</p>
+                    <h3>Master Web Development</h3>
+                    <p class="completion-date">Awarded on: <span id="cert-date"></span></p>
+                    <div class="qr-container">
+                        <div id="qrcode"></div>
+                        <div class="qr-text">
+                            <strong>🔒 Verify Authenticity</strong>
+                            Scan this QR code or visit<br>
+                            <span style="color: #2563eb; font-weight: 600;">abn-tech.com/verify</span><br>
+                            Certificate ID: <span id="cert-id" style="font-family: 'Courier New', monospace;"></span>
+                        </div>
                     </div>
-                </div>
-                <div style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; width: 200px; margin-left: auto; margin-right: auto;">
-                    <p style="font-weight: bold; margin: 0;">Ikechukwu Nwoke</p>
-                    <p style="font-size: 0.9rem; color: var(--gray); margin: 0;">Lead Instructor & CEO</p>
+                    <div class="certificate-signature">
+                        <div class="signature-block">
+                            <!-- EMBEDDED ABN SIGNATURE (Base64 SVG) -->
+                            <!-- To use your own real signature, change the src below to: src="signature.png" -->
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCAxNTAgNjAiPjx0ZXh0IHg9IjEwIiB5PSI0NSIgZm9udC1mYW1pbHk9IidTZWdvZSBTY3JpcHQnLCAnQnJ1c2ggU2NyaXB0IE1UJywgY3Vyc2l2ZSIgZm9udC1zaXplPSI0MCIgZmlsbD0iIzI1NjNlYiIgZm9udC13ZWlnaHQ9ImJvbGQiPkFCTjwvdGV4dD48cGF0aCBkPSJNIDE1IDUwIFEgNzUgNjAgMTM1IDQ1IiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMi41IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=" alt="ABN Signature" class="signature-image">
+                            <div class="signature-line">
+                                <p class="signature-name">Ikechukwu Nwoke</p>
+                                <p class="signature-title">Lead Instructor & CEO</p>
+                            </div>
+                        </div>
+                        <div class="signature-block">
+                            <div style="height: 60px;"></div>
+                            <div class="signature-line">
+                                <p class="signature-name">ABN Technologies</p>
+                                <p class="signature-title">Official Seal</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="certificate-id">Certificate ID: <span id="cert-id-footer"></span></p>
                 </div>
             </div>
-            <button class="btn" style="margin-top: 20px;" onclick="window.print()">🖨️ Print / Save as PDF</button>
-            <button class="btn btn-outline" style="margin-top: 10px;" onclick="showView('view-dashboard')">Back to Dashboard</button>
+            <div style="max-width: 900px; margin: 20px auto; display: flex; gap: 15px; flex-wrap: wrap;">
+                <button class="btn" style="flex: 1; min-width: 200px;" onclick="window.print()">🖨️ Print / Save as PDF</button>
+                <button class="btn btn-outline" style="flex: 1; min-width: 200px;" onclick="showView('view-dashboard')">Back to Dashboard</button>
+            </div>
         </div>
-
     </div>
 
     <script>
@@ -332,677 +393,66 @@
         // COMPLETE 60-DAY CURRICULUM
         // ============================================
         const curriculum = {
-            // ===== PHASE 1: HTML FUNDAMENTALS (Days 1-10) =====
-            1: { 
-                note: "Welcome to Day 1! Today, we focus on the skeleton of the web: HTML5. Learn about document structure, semantic tags, and how browsers read your code.", 
-                link: "https://www.w3schools.com/html/html_intro.asp",
-                practicalTask: "<strong>Task:</strong> Write an HTML heading (&lt;h1&gt;) that says 'Hello World' and a paragraph (&lt;p&gt;) that says 'I am learning web development'.",
-                requiredKeywords: ["<h1>", "</h1>", "<p>", "</p>"],
-                quiz: {
-                    q1: { question: "What does HTML stand for?", options: [["Hyper Text Making Language", "wrong"], ["Hyper Text Markup Language", "correct"], ["High Tech Modern Language", "wrong"]] },
-                    q2: { question: "Which tag is used for the largest heading?", options: [["&lt;heading&gt;", "wrong"], ["&lt;h6&gt;", "wrong"], ["&lt;h1&gt;", "correct"]] },
-                    q3: "Briefly explain the purpose of HTML in web development."
-                }
-            },
-            2: { 
-                note: "Day 2: HTML Elements & Attributes. Learn how to add properties like 'id', 'class', and 'title' to give your tags extra meaning.", 
-                link: "https://www.w3schools.com/html/html_elements.asp",
-                practicalTask: "<strong>Task:</strong> Create a paragraph with a 'class' attribute set to 'intro' and a 'title' attribute set to 'About Me'.",
-                requiredKeywords: ["<p", "class=", "title=", "</p>"],
-                quiz: {
-                    q1: { question: "Which attribute specifies a unique id for an element?", options: [["class", "wrong"], ["id", "correct"], ["name", "wrong"]] },
-                    q2: { question: "Attributes are placed inside which part of the tag?", options: [["Closing tag", "wrong"], ["Opening tag", "correct"], ["Between tags", "wrong"]] },
-                    q3: "What is the difference between the 'id' and 'class' attributes?"
-                }
-            },
-            3: { 
-                note: "Day 3: HTML Headings & Paragraphs. Master the hierarchy of text on a webpage using &lt;h1&gt; through &lt;h6&gt; and &lt;p&gt; tags.", 
-                link: "https://www.w3schools.com/html/html_headings.asp",
-                practicalTask: "<strong>Task:</strong> Create an &lt;h1&gt;, &lt;h2&gt;, and &lt;h3&gt; heading followed by a paragraph under each.",
-                requiredKeywords: ["<h1>", "<h2>", "<h3>", "<p>", "</p>"],
-                quiz: {
-                    q1: { question: "How many heading levels does HTML support?", options: [["4", "wrong"], ["6", "correct"], ["8", "wrong"]] },
-                    q2: { question: "Which heading is the most important?", options: [["&lt;h6&gt;", "wrong"], ["&lt;h1&gt;", "correct"], ["&lt;head&gt;", "wrong"]] },
-                    q3: "Why is heading hierarchy important for SEO and accessibility?"
-                }
-            },
-            4: { 
-                note: "Day 4: HTML Formatting. Learn to make text bold, italic, underlined, and more using semantic formatting tags.", 
-                link: "https://www.w3schools.com/html/html_formatting.asp",
-                practicalTask: "<strong>Task:</strong> Write a paragraph with a &lt;strong&gt; word, an &lt;em&gt; word, and a &lt;mark&gt; word.",
-                requiredKeywords: ["<strong>", "</strong>", "<em>", "</em>", "<mark>", "</mark>"],
-                quiz: {
-                    q1: { question: "Which tag makes text semantically important (bold)?", options: [["&lt;b&gt;", "wrong"], ["&lt;strong&gt;", "correct"], ["&lt;bold&gt;", "wrong"]] },
-                    q2: { question: "Which tag is used for emphasized (italic) text?", options: [["&lt;i&gt;", "wrong"], ["&lt;em&gt;", "correct"], ["&lt;italic&gt;", "wrong"]] },
-                    q3: "What is the difference between &lt;b&gt; and &lt;strong&gt;?"
-                }
-            },
-            5: { 
-                note: "Day 5: HTML Quotations & Code. Learn to display quotes with &lt;blockquote&gt; and code snippets with &lt;code&gt; and &lt;pre&gt;.", 
-                link: "https://www.w3schools.com/html/html_quotation_elements.asp",
-                practicalTask: "<strong>Task:</strong> Use &lt;blockquote&gt; for a quote and &lt;code&gt; to show a code snippet like 'console.log()'.",
-                requiredKeywords: ["<blockquote>", "</blockquote>", "<code>", "</code>"],
-                quiz: {
-                    q1: { question: "Which tag defines a section quoted from another source?", options: [["&lt;quote&gt;", "wrong"], ["&lt;blockquote&gt;", "correct"], ["&lt;q&gt; only", "wrong"]] },
-                    q2: { question: "Which tag preserves whitespace and line breaks?", options: [["&lt;code&gt;", "wrong"], ["&lt;pre&gt;", "correct"], ["&lt;space&gt;", "wrong"]] },
-                    q3: "When would you use &lt;pre&gt; instead of &lt;code&gt;?"
-                }
-            },
-            6: { 
-                note: "Day 6: HTML Comments. Learn to leave notes in your code that browsers ignore using &lt;!-- comment --&gt;.", 
-                link: "https://www.w3schools.com/html/html_comments.asp",
-                practicalTask: "<strong>Task:</strong> Write an HTML comment that says 'This is my first webpage' and then an &lt;h1&gt; below it.",
-                requiredKeywords: ["<!--", "-->", "<h1>"],
-                quiz: {
-                    q1: { question: "What is the correct HTML comment syntax?", options: [["// comment", "wrong"], ["&lt;!-- comment --&gt;", "correct"], ["# comment", "wrong"]] },
-                    q2: { question: "Are HTML comments visible to users?", options: [["Yes", "wrong"], ["No", "correct"], ["Only on mobile", "wrong"]] },
-                    q3: "Why are comments useful in web development?"
-                }
-            },
-            7: { 
-                note: "Day 7: HTML Links. Master hyperlinks with the &lt;a&gt; tag, href attribute, and target='_blank' for new tabs.", 
-                link: "https://www.w3schools.com/html/html_links.asp",
-                practicalTask: "<strong>Task:</strong> Create a link to 'https://google.com' that opens in a new tab with text 'Visit Google'.",
-                requiredKeywords: ["<a", "href=", "target=", "_blank", "</a>"],
-                quiz: {
-                    q1: { question: "Which attribute specifies the URL of a link?", options: [["src", "wrong"], ["href", "correct"], ["link", "wrong"]] },
-                    q2: { question: "How do you open a link in a new tab?", options: [["target='_self'", "wrong"], ["target='_blank'", "correct"], ["new='true'", "wrong"]] },
-                    q3: "What is the difference between relative and absolute URLs?"
-                }
-            },
-            8: { 
-                note: "Day 8: HTML Images. Learn to display images with the self-closing &lt;img&gt; tag using 'src' and 'alt' attributes.", 
-                link: "https://www.w3schools.com/html/html_images.asp",
-                practicalTask: "<strong>Task:</strong> Add an image with src='photo.jpg', alt='My photo', width='300'.",
-                requiredKeywords: ["<img", "src=", "alt=", "width="],
-                quiz: {
-                    q1: { question: "Which attribute is REQUIRED in an &lt;img&gt; tag?", options: [["width", "wrong"], ["alt", "correct"], ["title", "wrong"]] },
-                    q2: { question: "Is &lt;img&gt; a self-closing tag?", options: [["No", "wrong"], ["Yes", "correct"], ["Only in HTML5", "wrong"]] },
-                    q3: "Why is the 'alt' attribute important for accessibility?"
-                }
-            },
-            9: { 
-                note: "Day 9: HTML Lists. Master ordered (&lt;ol&gt;), unordered (&lt;ul&gt;), and description lists (&lt;dl&gt;).", 
-                link: "https://www.w3schools.com/html/html_lists.asp",
-                practicalTask: "<strong>Task:</strong> Create an unordered list with 3 items and an ordered list with 2 items.",
-                requiredKeywords: ["<ul>", "</ul>", "<ol>", "</ol>", "<li>", "</li>"],
-                quiz: {
-                    q1: { question: "Which tag creates a numbered list?", options: [["&lt;ul&gt;", "wrong"], ["&lt;ol&gt;", "correct"], ["&lt;nl&gt;", "wrong"]] },
-                    q2: { question: "What tag wraps each item in a list?", options: [["&lt;item&gt;", "wrong"], ["&lt;li&gt;", "correct"], ["&lt;list&gt;", "wrong"]] },
-                    q3: "When would you use &lt;ol&gt; vs &lt;ul&gt;?"
-                }
-            },
-            10: { 
-                note: "Day 10: HTML Tables. Learn to structure data with &lt;table&gt;, &lt;tr&gt;, &lt;th&gt;, and &lt;td&gt; tags.", 
-                link: "https://www.w3schools.com/html/html_tables.asp",
-                practicalTask: "<strong>Task:</strong> Create a table with 2 rows and 2 columns, including a header row with &lt;th&gt;.",
-                requiredKeywords: ["<table>", "</table>", "<tr>", "<th>", "<td>"],
-                quiz: {
-                    q1: { question: "Which tag defines a table row?", options: [["&lt;td&gt;", "wrong"], ["&lt;tr&gt;", "correct"], ["&lt;row&gt;", "wrong"]] },
-                    q2: { question: "Which tag defines a table header cell?", options: [["&lt;th&gt;", "correct"], ["&lt;td&gt;", "wrong"], ["&lt;head&gt;", "wrong"]] },
-                    q3: "What is the difference between &lt;th&gt; and &lt;td&gt;?"
-                }
-            },
-
-            // ===== PHASE 2: CSS BASICS (Days 11-20) =====
-            11: { 
-                note: "Day 11: Introduction to CSS. Learn how CSS styles HTML elements using selectors, properties, and values.", 
-                link: "https://www.w3schools.com/css/css_intro.asp",
-                practicalTask: "<strong>Task:</strong> Write CSS to make all &lt;p&gt; elements have color: blue and font-size: 16px.",
-                requiredKeywords: ["p", "{", "color:", "blue", "font-size:", "16px"],
-                quiz: {
-                    q1: { question: "What does CSS stand for?", options: [["Creative Style Sheets", "wrong"], ["Cascading Style Sheets", "correct"], ["Computer Style Sheets", "wrong"]] },
-                    q2: { question: "Which is the correct CSS syntax?", options: [["p:color=blue", "wrong"], ["p {color: blue;}", "correct"], ["{p; color:blue}"]], },
-                    q3: "Name the three ways to insert CSS into HTML."
-                }
-            },
-            12: { 
-                note: "Day 12: CSS Selectors. Master element, class (.), id (#), and universal (*) selectors.", 
-                link: "https://www.w3schools.com/css/css_selectors.asp",
-                practicalTask: "<strong>Task:</strong> Write CSS to style a class '.highlight' with yellow background and an id '#main' with red text.",
-                requiredKeywords: [".highlight", "background:", "yellow", "#main", "color:", "red"],
-                quiz: {
-                    q1: { question: "How do you select an element with id 'demo'?", options: [[".demo", "wrong"], ["#demo", "correct"], ["demo"]], },
-                    q2: { question: "How do you select elements with class 'test'?", options: [["#test", "wrong"], [".test", "correct"], ["test"]], },
-                    q3: "What is the specificity order from lowest to highest?"
-                }
-            },
-            13: { 
-                note: "Day 13: CSS Colors. Learn hex (#RRGGBB), RGB, RGBA, HSL, and named colors.", 
-                link: "https://www.w3schools.com/css/css_colors.asp",
-                practicalTask: "<strong>Task:</strong> Set a div's background to #3498db and text color to white using CSS.",
-                requiredKeywords: ["background", "#3498db", "color", "white"],
-                quiz: {
-                    q1: { question: "Which is a valid hex color?", options: [["#GG0000", "wrong"], ["#FF5733", "correct"], ["#12345G"]], },
-                    q2: { question: "What does RGBA's 'A' stand for?", options: [["Angle", "wrong"], ["Alpha (opacity)", "correct"], ["Area"]], },
-                    q3: "Explain the difference between RGB and HSL color models."
-                }
-            },
-            14: { 
-                note: "Day 14: CSS Backgrounds. Control background color, image, position, repeat, and size.", 
-                link: "https://www.w3schools.com/css/css_background.asp",
-                practicalTask: "<strong>Task:</strong> Set a background image 'bg.jpg' that doesn't repeat and covers the element.",
-                requiredKeywords: ["background-image", "background-repeat", "no-repeat", "background-size", "cover"],
-                quiz: {
-                    q1: { question: "Which property sets the background image?", options: [["bg-img", "wrong"], ["background-image", "correct"], ["image-bg"]], },
-                    q2: { question: "How do you prevent background image repeat?", options: [["background-repeat: none", "wrong"], ["background-repeat: no-repeat", "correct"], ["background: no-repeat"]], },
-                    q3: "What does 'background-size: cover' do?"
-                }
-            },
-            15: { 
-                note: "Day 15: CSS Borders. Master border width, style, color, and border-radius for rounded corners.", 
-                link: "https://www.w3schools.com/css/css_border.asp",
-                practicalTask: "<strong>Task:</strong> Create a div with a 2px solid blue border and 10px border-radius.",
-                requiredKeywords: ["border:", "2px", "solid", "blue", "border-radius:", "10px"],
-                quiz: {
-                    q1: { question: "Which is NOT a valid border style?", options: [["solid", "wrong"], ["dashed", "wrong"], ["thick", "correct"]] },
-                    q2: { question: "How do you make a circular element?", options: [["border-radius: 100%", "correct"], ["border-radius: 50%", "wrong"], ["border: circle"]], },
-                    q3: "How would you create a card with rounded corners?"
-                }
-            },
-            16: { 
-                note: "Day 16: CSS Margins & Padding. Understand the spacing outside (margin) and inside (padding) elements.", 
-                link: "https://www.w3schools.com/css/css_margin.asp",
-                practicalTask: "<strong>Task:</strong> Set a box with 20px margin, 15px padding, and 1px solid gray border.",
-                requiredKeywords: ["margin:", "20px", "padding:", "15px", "border:"],
-                quiz: {
-                    q1: { question: "What does margin control?", options: [["Space inside element", "wrong"], ["Space outside element", "correct"], ["Element width"]], },
-                    q2: { question: "What does 'margin: 10px 20px' mean?", options: [["10px all sides", "wrong"], ["10px top/bottom, 20px left/right", "correct"], ["10px left/right, 20px top/bottom"]], },
-                    q3: "Explain the CSS box model."
-                }
-            },
-            17: { 
-                note: "Day 17: CSS Height, Width & Box Model. Control element dimensions and understand content-box vs border-box.", 
-                link: "https://www.w3schools.com/css/css_dimension.asp",
-                practicalTask: "<strong>Task:</strong> Create a box with width: 300px, height: 200px, and box-sizing: border-box.",
-                requiredKeywords: ["width:", "300px", "height:", "200px", "box-sizing:", "border-box"],
-                quiz: {
-                    q1: { question: "What does box-sizing: border-box do?", options: [["Adds border only", "wrong"], ["Includes padding/border in width", "correct"], ["Removes margins"]], },
-                    q2: { question: "Can you set max-width on an element?", options: [["No", "wrong"], ["Yes", "correct"], ["Only with JS"]], },
-                    q3: "Why is box-sizing: border-box recommended?"
-                }
-            },
-            18: { 
-                note: "Day 18: CSS Text & Fonts. Control text alignment, decoration, transformation, and font families.", 
-                link: "https://www.w3schools.com/css/css_font.asp",
-                practicalTask: "<strong>Task:</strong> Center-align text, make it uppercase, and set font-family to Arial.",
-                requiredKeywords: ["text-align:", "center", "text-transform:", "uppercase", "font-family:", "arial"],
-                quiz: {
-                    q1: { question: "How do you center text?", options: [["align: center", "wrong"], ["text-align: center", "correct"], ["text-center: true"]], },
-                    q2: { question: "Which property makes text uppercase?", options: [["text-style: upper", "wrong"], ["text-transform: uppercase", "correct"], ["font-transform: cap"]], },
-                    q3: "What is a web-safe font?"
-                }
-            },
-            19: { 
-                note: "Day 19: CSS Display Property. Master block, inline, inline-block, none, and flex display values.", 
-                link: "https://www.w3schools.com/css/css_display_visibility.asp",
-                practicalTask: "<strong>Task:</strong> Make a span display as inline-block with width: 100px and height: 50px.",
-                requiredKeywords: ["display:", "inline-block", "width:", "100px", "height:", "50px"],
-                quiz: {
-                    q1: { question: "Which display value hides an element completely?", options: [["hidden", "wrong"], ["none", "correct"], ["invisible"]], },
-                    q2: { question: "What is the default display of &lt;div&gt;?", options: [["inline", "wrong"], ["block", "correct"], ["inline-block"]], },
-                    q3: "What is the difference between display:none and visibility:hidden?"
-                }
-            },
-            20: { 
-                note: "Day 20: CSS Positioning. Master static, relative, absolute, fixed, and sticky positioning.", 
-                link: "https://www.w3schools.com/css/css_positioning.asp",
-                practicalTask: "<strong>Task:</strong> Create a fixed navigation bar at the top with position: fixed, top: 0, width: 100%.",
-                requiredKeywords: ["position:", "fixed", "top:", "0", "width:", "100%"],
-                quiz: {
-                    q1: { question: "Which position is relative to the viewport?", options: [["absolute", "wrong"], ["fixed", "correct"], ["relative"]], },
-                    q2: { question: "What is the default position value?", options: [["relative", "wrong"], ["static", "correct"], ["absolute"]], },
-                    q3: "When would you use position: absolute vs fixed?"
-                }
-            },
-
-            // ===== PHASE 3: RESPONSIVE DESIGN (Days 21-30) =====
-            21: { 
-                note: "Day 21: CSS Flexbox Introduction. Learn the powerful flex container and flex items for 1D layouts.", 
-                link: "https://www.w3schools.com/css/css3_flexbox.asp",
-                practicalTask: "<strong>Task:</strong> Create a flex container with 3 items displayed in a row with space-between.",
-                requiredKeywords: ["display:", "flex", "justify-content:", "space-between"],
-                quiz: {
-                    q1: { question: "How do you create a flex container?", options: [["flex: true", "wrong"], ["display: flex", "correct"], ["position: flex"]], },
-                    q2: { question: "Which property aligns items horizontally in a row?", options: [["align-items", "wrong"], ["justify-content", "correct"], ["flex-align"]], },
-                    q3: "What is the default flex-direction?"
-                }
-            },
-            22: { 
-                note: "Day 22: Flexbox Alignment. Master justify-content, align-items, align-self, and flex-wrap.", 
-                link: "https://www.w3schools.com/css/css3_flexbox_alignment.asp",
-                practicalTask: "<strong>Task:</strong> Center items both vertically and horizontally using flexbox.",
-                requiredKeywords: ["display:", "flex", "justify-content:", "center", "align-items:", "center"],
-                quiz: {
-                    q1: { question: "How do you center items vertically in flexbox?", options: [["justify-content: center", "wrong"], ["align-items: center", "correct"], ["vertical-align: middle"]], },
-                    q2: { question: "What does flex-wrap: wrap do?", options: [["Prevents wrapping", "wrong"], ["Allows items to wrap", "correct"], ["Hides overflow"]], },
-                    q3: "How do you center a div both ways using flexbox?"
-                }
-            },
-            23: { 
-                note: "Day 23: CSS Grid Introduction. Learn the powerful 2D layout system with grid containers and items.", 
-                link: "https://www.w3schools.com/css/css_grid.asp",
-                practicalTask: "<strong>Task:</strong> Create a 3-column grid with gap: 20px.",
-                requiredKeywords: ["display:", "grid", "grid-template-columns:", "gap:", "20px"],
-                quiz: {
-                    q1: { question: "How do you create a 3-column grid?", options: [["columns: 3", "wrong"], ["grid-template-columns: repeat(3, 1fr)", "correct"], ["grid: 3"]], },
-                    q2: { question: "What does '1fr' mean?", options: [["1 pixel", "wrong"], ["1 fraction of available space", "correct"], ["1 frame"]], },
-                    q3: "When would you use Grid vs Flexbox?"
-                }
-            },
-            24: { 
-                note: "Day 24: CSS Grid Areas. Name grid areas and place items in specific grid regions.", 
-                link: "https://www.w3schools.com/css/css_grid_container.asp",
-                practicalTask: "<strong>Task:</strong> Create a grid with named areas: header, main, sidebar, footer.",
-                requiredKeywords: ["grid-template-areas:", "header", "main", "sidebar", "footer"],
-                quiz: {
-                    q1: { question: "Which property defines grid area names?", options: [["grid-areas", "wrong"], ["grid-template-areas", "correct"], ["area-names"]], },
-                    q2: { question: "How do you place an item in a named area?", options: [["grid-area: name", "correct"], ["area: name", "wrong"], ["place: name"]], },
-                    q3: "Create a basic holy grail layout using grid areas."
-                }
-            },
-            25: { 
-                note: "Day 25: Media Queries. Make your website responsive by applying styles based on screen size.", 
-                link: "https://www.w3schools.com/css/css_rwd_mediaqueries.asp",
-                practicalTask: "<strong>Task:</strong> Write a media query that changes body background to blue on screens under 768px.",
-                requiredKeywords: ["@media", "max-width:", "768px", "background:", "blue"],
-                quiz: {
-                    q1: { question: "What is a media query used for?", options: [["Playing media", "wrong"], ["Responsive design", "correct"], ["Loading videos"]], },
-                    q2: { question: "Which is the correct syntax?", options: ["@media (max-width: 768px) {}", "@screen 768px {}", "@responsive 768px {}"], },
-                    q3: "What is mobile-first design?"
-                }
-            },
-            26: { 
-                note: "Day 26: Responsive Units. Master px, em, rem, %, vw, vh for fluid layouts.", 
-                link: "https://www.w3schools.com/css/css_rwd_units.asp",
-                practicalTask: "<strong>Task:</strong> Set font-size using rem and width using vw for responsive design.",
-                requiredKeywords: ["font-size:", "rem", "width:", "vw"],
-                quiz: {
-                    q1: { question: "What does 1rem equal?", options: [["1 pixel", "wrong"], ["Root element font size", "correct"], ["10 pixels"]], },
-                    q2: { question: "What does 100vw represent?", options: [["100 pixels", "wrong"], ["100% of viewport width", "correct"], ["100% of parent"]], },
-                    q3: "Why use rem over px for font sizes?"
-                }
-            },
-            27: { 
-                note: "Day 27: Responsive Images. Make images scale properly using max-width: 100% and srcset.", 
-                link: "https://www.w3schools.com/css/css_rwd_images.asp",
-                practicalTask: "<strong>Task:</strong> Make an image responsive with max-width: 100% and height: auto.",
-                requiredKeywords: ["max-width:", "100%", "height:", "auto"],
-                quiz: {
-                    q1: { question: "How do you make an image responsive?", options: [["width: 100%", "wrong"], ["max-width: 100%; height: auto", "correct"], ["responsive: true"]], },
-                    q2: { question: "What does srcset do?", options: [["Sets source", "wrong"], ["Provides multiple image sizes", "correct"], ["Sets alt text"]], },
-                    q3: "Why is max-width preferred over width for responsive images?"
-                }
-            },
-            28: { 
-                note: "Day 28: CSS Variables (Custom Properties). Define reusable values with --variable-name and var().", 
-                link: "https://www.w3schools.com/css/css3_variables.asp",
-                practicalTask: "<strong>Task:</strong> Define a --primary-color variable and use it on a button's background.",
-                requiredKeywords: ["--primary-color:", "var(", "--primary-color"],
-                quiz: {
-                    q1: { question: "How do you declare a CSS variable?", options: [["$color: blue", "wrong"], ["--color: blue", "correct"], ["var color = blue"]], },
-                    q2: { question: "How do you use a CSS variable?", options: [["$(color)", "wrong"], ["var(--color)", "correct"], ["@color"]], },
-                    q3: "Where should you define global CSS variables?"
-                }
-            },
-            29: { 
-                note: "Day 29: CSS Transitions & Animations. Add smooth effects with transition and @keyframes.", 
-                link: "https://www.w3schools.com/css/css3_transitions.asp",
-                practicalTask: "<strong>Task:</strong> Create a button that smoothly changes background color over 0.3s on hover.",
-                requiredKeywords: ["transition:", "0.3s", ":hover", "background"],
-                quiz: {
-                    q1: { question: "Which property creates smooth changes?", options: [["animation", "wrong"], ["transition", "correct"], ["transform"]], },
-                    q2: { question: "What defines keyframe animations?", options: ["@keyframes", "@animation", "@frames"], },
-                    q3: "What is the difference between transition and animation?"
-                }
-            },
-            30: { 
-                note: "Day 30: CSS Transforms. Rotate, scale, skew, and translate elements in 2D and 3D.", 
-                link: "https://www.w3schools.com/css/css3_transforms.asp",
-                practicalTask: "<strong>Task:</strong> Rotate a div 45deg and scale it to 1.2 on hover.",
-                requiredKeywords: ["transform:", "rotate(", "45deg", "scale(", "1.2"],
-                quiz: {
-                    q1: { question: "Which function rotates an element?", options: [["spin()", "wrong"], ["rotate()", "correct"], ["turn()"]], },
-                    q2: { question: "What does scale(2) do?", options: [["Moves 2px", "wrong"], ["Doubles the size", "correct"], ["Rotates 2deg"]], },
-                    q3: "How would you flip an element horizontally?"
-                }
-            },
-
-            // ===== PHASE 4: JAVASCRIPT BASICS (Days 31-40) =====
-            31: { 
-                note: "Day 31: Introduction to JavaScript. Learn what JS is, how to add it to HTML, and write your first 'Hello World'.", 
-                link: "https://www.w3schools.com/js/js_intro.asp",
-                practicalTask: "<strong>Task:</strong> Write a JavaScript alert that says 'Hello, World!'.",
-                requiredKeywords: ["alert(", "hello", "world"],
-                quiz: {
-                    q1: { question: "Where can JavaScript be placed in HTML?", options: [["Only in &lt;head&gt;", "wrong"], ["In &lt;head&gt; or &lt;body&gt;", "correct"], ["Only in &lt;body&gt;"]], },
-                    q2: { question: "Which tag embeds JavaScript?", options: [["&lt;javascript&gt;", "wrong"], ["&lt;script&gt;", "correct"], ["&lt;js&gt;"]], },
-                    q3: "What can JavaScript do that HTML/CSS cannot?"
-                }
-            },
-            32: { 
-                note: "Day 32: JavaScript Variables. Learn var, let, and const for storing data.", 
-                link: "https://www.w3schools.com/js/js_variables.asp",
-                practicalTask: "<strong>Task:</strong> Declare a const 'name' with your name and a let 'age' with your age.",
-                requiredKeywords: ["const", "name", "let", "age"],
-                quiz: {
-                    q1: { question: "Which keyword declares a constant?", options: [["var", "wrong"], ["const", "correct"], ["let"]], },
-                    q2: { question: "Can you reassign a const variable?", options: [["Yes", "wrong"], ["No", "correct"], ["Only with let"]], },
-                    q3: "What is the difference between let and var?"
-                }
-            },
-            33: { 
-                note: "Day 33: JavaScript Data Types. Master strings, numbers, booleans, arrays, objects, null, and undefined.", 
-                link: "https://www.w3schools.com/js/js_datatypes.asp",
-                practicalTask: "<strong>Task:</strong> Create a string, a number, a boolean, and an array with 3 items.",
-                requiredKeywords: ["const", "let", "true", "false", "[", "]"],
-                quiz: {
-                    q1: { question: "Which is NOT a JS data type?", options: [["String", "wrong"], ["Character", "correct"], ["Boolean"]], },
-                    q2: { question: "What is typeof null?", options: [["null", "wrong"], ["object", "correct"], ["undefined"]], },
-                    q3: "Explain the difference between null and undefined."
-                }
-            },
-            34: { 
-                note: "Day 34: JavaScript Operators. Learn arithmetic, assignment, comparison, and logical operators.", 
-                link: "https://www.w3schools.com/js/js_operators.asp",
-                practicalTask: "<strong>Task:</strong> Use +, -, *, / operators and ===, !== comparison operators.",
-                requiredKeywords: ["+", "-", "*", "/", "===", "!=="],
-                quiz: {
-                    q1: { question: "What does === check?", options: [["Value only", "wrong"], ["Value and type", "correct"], ["Type only"]], },
-                    q2: { question: "What does '++' do?", options: [["Adds 2", "wrong"], ["Increments by 1", "correct"], ["Doubles"]], },
-                    q3: "What is the difference between == and ===?"
-                }
-            },
-            35: { 
-                note: "Day 35: JavaScript Functions. Learn to create reusable blocks of code with function declarations and arrow functions.", 
-                link: "https://www.w3schools.com/js/js_functions.asp",
-                practicalTask: "<strong>Task:</strong> Write a function 'greet' that takes a name parameter and returns 'Hello, ' + name.",
-                requiredKeywords: ["function", "greet", "return", "hello"],
-                quiz: {
-                    q1: { question: "Which keyword creates a function?", options: [["func", "wrong"], ["function", "correct"], ["def"]], },
-                    q2: { question: "What does 'return' do?", options: [["Ends the program", "wrong"], ["Outputs a value", "correct"], ["Loops"]], },
-                    q3: "What is an arrow function?"
-                }
-            },
-            36: { 
-                note: "Day 36: JavaScript Conditionals. Control flow with if, else if, else, and switch statements.", 
-                link: "https://www.w3schools.com/js/js_if_else.asp",
-                practicalTask: "<strong>Task:</strong> Write an if/else statement that checks if age >= 18 and logs 'Adult' or 'Minor'.",
-                requiredKeywords: ["if", "else", ">=", "18"],
-                quiz: {
-                    q1: { question: "What does 'else if' do?", options: [["Ends the block", "wrong"], ["Checks another condition", "correct"], ["Creates a loop"]], },
-                    q2: { question: "Which is used for multiple conditions?", options: [["if", "wrong"], ["switch", "correct"], ["for"]], },
-                    q3: "What is a ternary operator?"
-                }
-            },
-            37: { 
-                note: "Day 37: JavaScript Loops. Master for, while, do...while, and for...of loops.", 
-                link: "https://www.w3schools.com/js/js_loop_for.asp",
-                practicalTask: "<strong>Task:</strong> Write a for loop that logs numbers 1 through 5.",
-                requiredKeywords: ["for", "let", "console.log"],
-                quiz: {
-                    q1: { question: "How many parts does a for loop have?", options: [["2", "wrong"], ["3", "correct"], ["4"]], },
-                    q2: { question: "Which loop runs at least once?", options: [["for", "wrong"], ["do...while", "correct"], ["while"]], },
-                    q3: "What is an infinite loop and how do you avoid it?"
-                }
-            },
-            38: { 
-                note: "Day 38: JavaScript Arrays. Learn to create, access, and manipulate arrays with push, pop, map, filter.", 
-                link: "https://www.w3schools.com/js/js_arrays.asp",
-                practicalTask: "<strong>Task:</strong> Create an array of 3 fruits and use push() to add a 4th.",
-                requiredKeywords: ["const", "[", "]", "push("],
-                quiz: {
-                    q1: { question: "What index does the first array item have?", options: [["1", "wrong"], ["0", "correct"], ["-1"]], },
-                    q2: { question: "Which method adds to the end?", options: [["pop()", "wrong"], ["push()", "correct"], ["add()"]], },
-                    q3: "How do you loop through an array?"
-                }
-            },
-            39: { 
-                note: "Day 39: JavaScript Objects. Create objects with key-value pairs and access properties with dot and bracket notation.", 
-                link: "https://www.w3schools.com/js/js_objects.asp",
-                practicalTask: "<strong>Task:</strong> Create a person object with name, age, and city properties.",
-                requiredKeywords: ["const", "{", "name:", "age:", "city:"],
-                quiz: {
-                    q1: { question: "How do you access object property 'name'?", options: [["person[name]", "wrong"], ["person.name", "correct"], ["person->name"]], },
-                    q2: { question: "What are object values called?", options: [["Keys", "wrong"], ["Properties", "correct"], ["Variables"]], },
-                    q3: "What is the difference between dot and bracket notation?"
-                }
-            },
-            40: { 
-                note: "Day 40: JavaScript String Methods. Master length, toUpperCase, slice, split, replace, and more.", 
-                link: "https://www.w3schools.com/js/js_string_methods.asp",
-                practicalTask: "<strong>Task:</strong> Use toUpperCase() and length on a string variable.",
-                requiredKeywords: ["toUpperCase()", "length"],
-                quiz: {
-                    q1: { question: "What does .length return?", options: [["The string", "wrong"], ["Number of characters", "correct"], ["First character"]], },
-                    q2: { question: "Which method converts to uppercase?", options: [["upper()", "wrong"], ["toUpperCase()", "correct"], ["toUpper()"]], },
-                    q3: "How do you extract part of a string?"
-                }
-            },
-
-            // ===== PHASE 5: DOM & INTERACTIVITY (Days 41-50) =====
-            41: { 
-                note: "Day 41: The DOM (Document Object Model). Learn how JavaScript interacts with HTML through the DOM tree.", 
-                link: "https://www.w3schools.com/js/js_htmldom.asp",
-                practicalTask: "<strong>Task:</strong> Use document.getElementById() to get an element and change its textContent.",
-                requiredKeywords: ["document.getelementbyid", "textcontent"],
-                quiz: {
-                    q1: { question: "What does DOM stand for?", options: [["Data Object Model", "wrong"], ["Document Object Model", "correct"], ["Digital Object Map"]], },
-                    q2: { question: "Which method selects by ID?", options: [["querySelector", "wrong"], ["getElementById", "correct"], ["getElement"]], },
-                    q3: "What is the DOM tree?"
-                }
-            },
-            42: { 
-                note: "Day 42: DOM Selectors. Master querySelector, querySelectorAll, getElementsByClassName, and getElementsByTagName.", 
-                link: "https://www.w3schools.com/js/js_htmldom_elements.asp",
-                practicalTask: "<strong>Task:</strong> Use querySelector('.btn') to select a button and querySelectorAll('p') to select all paragraphs.",
-                requiredKeywords: ["queryselector", ".btn", "queryselectorall"],
-                quiz: {
-                    q1: { question: "Which returns the FIRST match?", options: [["querySelectorAll", "wrong"], ["querySelector", "correct"], ["getElements"]], },
-                    q2: { question: "What does querySelectorAll return?", options: [["Single element", "wrong"], ["NodeList", "correct"], ["Array"]], },
-                    q3: "How do you loop through a NodeList?"
-                }
-            },
-            43: { 
-                note: "Day 43: Changing HTML Content. Modify innerHTML, textContent, and attributes dynamically.", 
-                link: "https://www.w3schools.com/js/js_htmldom_html.asp",
-                practicalTask: "<strong>Task:</strong> Change an element's innerHTML to '&lt;strong&gt;Bold Text&lt;/strong&gt;'.",
-                requiredKeywords: ["innerhtml", "<strong>", "bold"],
-                quiz: {
-                    q1: { question: "What's the difference between innerHTML and textContent?", options: [["No difference", "wrong"], ["innerHTML parses HTML", "correct"], ["textContent is faster only"]], },
-                    q2: { question: "Which is safer for user input?", options: [["innerHTML", "wrong"], ["textContent", "correct"], ["Both equal"]], },
-                    q3: "What is XSS and how does innerHTML relate to it?"
-                }
-            },
-            44: { 
-                note: "Day 44: Changing CSS with JavaScript. Modify styles dynamically using element.style.property.", 
-                link: "https://www.w3schools.com/js/js_htmldom_css.asp",
-                practicalTask: "<strong>Task:</strong> Change an element's color to red and fontSize to 20px using JS.",
-                requiredKeywords: ["style", "color", "red", "fontsize", "20px"],
-                quiz: {
-                    q1: { question: "How do you change background color in JS?", options: [["element.bgColor", "wrong"], ["element.style.backgroundColor", "correct"], ["element.css.bg"]], },
-                    q2: { question: "Why 'fontSize' not 'font-size'?", options: [["CSS rule", "wrong"], ["CamelCase in JS", "correct"], ["No reason"]], },
-                    q3: "How do you toggle a CSS class with JS?"
-                }
-            },
-            45: { 
-                note: "Day 45: JavaScript Events. Learn click, mouseover, keydown, submit, and other event types.", 
-                link: "https://www.w3schools.com/js/js_events.asp",
-                practicalTask: "<strong>Task:</strong> Add a click event listener to a button that shows an alert.",
-                requiredKeywords: ["addeventlistener", "click", "alert"],
-                quiz: {
-                    q1: { question: "Which method adds an event?", options: [["onClick()", "wrong"], ["addEventListener()", "correct"], ["addEvent()"]], },
-                    q2: { question: "What is an event handler?", options: [["The event itself", "wrong"], ["The function that runs", "correct"], ["The HTML element"]], },
-                    q3: "What is event bubbling?"
-                }
-            },
-            46: { 
-                note: "Day 46: Event Handling. Master event objects, preventDefault(), and event delegation.", 
-                link: "https://www.w3schools.com/js/js_events_input.asp",
-                practicalTask: "<strong>Task:</strong> Create a form that uses preventDefault() to stop submission and log input values.",
-                requiredKeywords: ["addeventlistener", "submit", "preventdefault"],
-                quiz: {
-                    q1: { question: "What does preventDefault() do?", options: [["Stops JS", "wrong"], ["Prevents default browser action", "correct"], ["Deletes element"]], },
-                    q2: { question: "What is 'event.target'?", options: [["The window", "wrong"], ["The element that triggered it", "correct"], ["The parent"]], },
-                    q3: "What is event delegation?"
-                }
-            },
-            47: { 
-                note: "Day 47: Creating & Removing Elements. Dynamically add and remove DOM nodes with createElement and remove().", 
-                link: "https://www.w3schools.com/js/js_htmldom_nodes.asp",
-                practicalTask: "<strong>Task:</strong> Create a new &lt;li&gt; element and append it to a &lt;ul&gt;.",
-                requiredKeywords: ["createelement", "li", "appendchild"],
-                quiz: {
-                    q1: { question: "Which method creates a new element?", options: [["newElement()", "wrong"], ["createElement()", "correct"], ["addElement()"]], },
-                    q2: { question: "How do you add it to the DOM?", options: [["add()", "wrong"], ["appendChild()", "correct"], ["insert()"]], },
-                    q3: "How do you remove an element from the DOM?"
-                }
-            },
-            48: { 
-                note: "Day 48: Form Validation. Validate user input before submission using JavaScript.", 
-                link: "https://www.w3schools.com/js/js_validation.asp",
-                practicalTask: "<strong>Task:</strong> Validate that an email input contains '@' before form submission.",
-                requiredKeywords: ["includes", "@"],
-                quiz: {
-                    q1: { question: "When should validation happen?", options: [["Only server-side", "wrong"], ["Both client and server", "correct"], ["Only client-side"]], },
-                    q2: { question: "Which method checks for substring?", options: [["contains()", "wrong"], ["includes()", "correct"], ["has()"]], },
-                    q3: "Why is server-side validation still needed?"
-                }
-            },
-            49: { 
-                note: "Day 49: LocalStorage. Save data in the browser that persists across page reloads.", 
-                link: "https://www.w3schools.com/js/js_web_storage.asp",
-                practicalTask: "<strong>Task:</strong> Save a username to localStorage and retrieve it.",
-                requiredKeywords: ["localstorage.setitem", "localstorage.getitem"],
-                quiz: {
-                    q1: { question: "Does localStorage persist after closing the browser?", options: [["No", "wrong"], ["Yes", "correct"], ["Only 24 hours"]], },
-                    q2: { question: "What data type does localStorage store?", options: [["Objects", "wrong"], ["Strings", "correct"], ["Any type"]], },
-                    q3: "What is the storage limit of localStorage?"
-                }
-            },
-            50: { 
-                note: "Day 50: JavaScript Timers. Master setTimeout, setInterval, and clearTimeout for delayed/repeated actions.", 
-                link: "https://www.w3schools.com/js/js_timing.asp",
-                practicalTask: "<strong>Task:</strong> Use setTimeout to show an alert after 3 seconds.",
-                requiredKeywords: ["settimeout", "3000"],
-                quiz: {
-                    q1: { question: "What unit does setTimeout use?", options: [["Seconds", "wrong"], ["Milliseconds", "correct"], ["Minutes"]], },
-                    q2: { question: "How do you stop a setInterval?", options: [["stopInterval()", "wrong"], ["clearInterval()", "correct"], ["endInterval()"]], },
-                    q3: "What is the difference between setTimeout and setInterval?"
-                }
-            },
-
-            // ===== PHASE 6: GIT, DEPLOYMENT & FINAL PROJECT (Days 51-60) =====
-            51: { 
-                note: "Day 51: Introduction to Git. Learn version control concepts: repository, commit, and why Git is essential.", 
-                link: "https://www.w3schools.com/git/git_intro.asp",
-                practicalTask: "<strong>Task:</strong> Write the Git commands to initialize a repo and make your first commit.",
-                requiredKeywords: ["git init", "git add", "git commit"],
-                quiz: {
-                    q1: { question: "What does Git track?", options: [["Images only", "wrong"], ["Code changes", "correct"], ["Databases"]], },
-                    q2: { question: "What is a commit?", options: [["A push", "wrong"], ["A snapshot of changes", "correct"], ["A branch"]], },
-                    q3: "Why is version control important?"
-                }
-            },
-            52: { 
-                note: "Day 52: Git Basics. Master git add, git commit, git status, and git log.", 
-                link: "https://www.w3schools.com/git/git_commit.asp",
-                practicalTask: "<strong>Task:</strong> Write commands to add all files, commit with message 'Initial commit', and view log.",
-                requiredKeywords: ["git add", "git commit", "-m", "git log"],
-                quiz: {
-                    q1: { question: "What does 'git add .' do?", options: [["Deletes files", "wrong"], ["Stages all changes", "correct"], ["Commits"]], },
-                    q2: { question: "What is the staging area?", options: [["GitHub", "wrong"], ["Where changes wait to be committed", "correct"], ["The final repo"]], },
-                    q3: "How do you view commit history?"
-                }
-            },
-            53: { 
-                note: "Day 53: GitHub. Learn to create remote repos, push code, and collaborate with others.", 
-                link: "https://www.w3schools.com/git/git_remote_push.asp",
-                practicalTask: "<strong>Task:</strong> Write commands to add a remote origin and push to GitHub.",
-                requiredKeywords: ["git remote add", "origin", "git push"],
-                quiz: {
-                    q1: { question: "What is GitHub?", options: [["A text editor", "wrong"], ["A Git hosting platform", "correct"], ["A browser"]], },
-                    q2: { question: "What does 'git push' do?", options: [["Downloads code", "wrong"], ["Uploads commits to remote", "correct"], ["Deletes repo"]], },
-                    q3: "What is a pull request?"
-                }
-            },
-            54: { 
-                note: "Day 54: Git Branches. Learn to create branches for features and merge them safely.", 
-                link: "https://www.w3schools.com/git/git_branch.asp",
-                practicalTask: "<strong>Task:</strong> Write commands to create a branch 'feature', switch to it, and merge back.",
-                requiredKeywords: ["git branch", "git checkout", "git merge"],
-                quiz: {
-                    q1: { question: "What is the default branch name?", options: [["master only", "wrong"], ["main or master", "correct"], ["develop"]], },
-                    q2: { question: "How do you switch branches?", options: [["git switch", "wrong"], ["git checkout", "correct"], ["Both work"]], },
-                    q3: "What is a merge conflict?"
-                }
-            },
-            55: { 
-                note: "Day 55: Web Hosting Basics. Understand domains, DNS, and hosting providers.", 
-                link: "https://www.w3schools.com/whatis/whatis_hosting.asp",
-                practicalTask: "<strong>Task:</strong> Write a short paragraph explaining the difference between domain and hosting.",
-                requiredKeywords: ["domain", "hosting"],
-                quiz: {
-                    q1: { question: "What is a domain name?", options: [["Server IP", "wrong"], ["Human-readable website address", "correct"], ["A file"]], },
-                    q2: { question: "What does DNS do?", options: [["Stores files", "wrong"], ["Translates domains to IPs", "correct"], ["Encrypts data"]], },
-                    q3: "Name 3 popular web hosting providers."
-                }
-            },
-            56: { 
-                note: "Day 56: Deploying with GitHub Pages. Host your static website for free using GitHub Pages.", 
-                link: "https://pages.github.com/",
-                practicalTask: "<strong>Task:</strong> Describe the steps to deploy an HTML file to GitHub Pages.",
-                requiredKeywords: ["settings", "pages", "main"],
-                quiz: {
-                    q1: { question: "Is GitHub Pages free?", options: [["No", "wrong"], ["Yes, for public repos", "correct"], ["Only paid"]], },
-                    q2: { question: "What files does GitHub Pages host?", options: [["Databases", "wrong"], ["Static HTML/CSS/JS", "correct"], ["PHP files"]], },
-                    q3: "How do you enable GitHub Pages?"
-                }
-            },
-            57: { 
-                note: "Day 57: Deploying with Netlify/Vercel. Modern platforms for deploying frontend apps with continuous deployment.", 
-                link: "https://www.netlify.com/",
-                practicalTask: "<strong>Task:</strong> Write the steps to deploy a site to Netlify via GitHub integration.",
-                requiredKeywords: ["netlify", "github", "deploy"],
-                quiz: {
-                    q1: { question: "What is continuous deployment?", options: [["Manual uploads", "wrong"], ["Auto-deploy on git push", "correct"], ["Weekly deploys"]], },
-                    q2: { question: "Does Netlify offer free SSL?", options: [["No", "wrong"], ["Yes", "correct"], ["Only paid"]], },
-                    q3: "Name 3 deployment platforms."
-                }
-            },
-            58: { 
-                note: "Day 58: Final Project Planning. Plan your capstone project: a personal portfolio website.", 
-                link: "https://www.freecodecamp.org/learn/2022/responsive-web-design/#build-a-personal-portfolio-webpage-project",
-                practicalTask: "<strong>Task:</strong> Create the HTML skeleton for a portfolio with header, about, projects, and contact sections.",
-                requiredKeywords: ["<header>", "<section", "id=", "<footer>"],
-                quiz: {
-                    q1: { question: "What should a portfolio include?", options: [["Only code", "wrong"], ["Projects, about, contact", "correct"], ["Just images"]], },
-                    q2: { question: "Why use semantic HTML?", options: [["Looks better", "wrong"], ["SEO and accessibility", "correct"], ["Faster loading"]], },
-                    q3: "List 5 key sections of a portfolio."
-                }
-            },
-            59: { 
-                note: "Day 59: Final Project Build. Build and style your portfolio using everything you've learned!", 
-                link: "https://www.freecodecamp.org/learn/2022/responsive-web-design/",
-                practicalTask: "<strong>Task:</strong> Add CSS to style your portfolio with flexbox/grid and responsive design.",
-                requiredKeywords: ["display:", "flex", "grid", "@media"],
-                quiz: {
-                    q1: { question: "What makes a portfolio responsive?", options: [["Fixed widths", "wrong"], ["Media queries and fluid units", "correct"], ["Only mobile CSS"]], },
-                    q2: { question: "Should you test on mobile?", options: [["No", "wrong"], ["Yes, always", "correct"], ["Only desktop"]], },
-                    q3: "What tools help you test responsiveness?"
-                }
-            },
-            60: { 
-                note: "Day 60: Final Project Deployment & Review. Deploy your portfolio and prepare for the final certification exam!", 
-                link: "https://pages.github.com/",
-                practicalTask: "<strong>Task:</strong> Deploy your portfolio to GitHub Pages and write the live URL.",
-                requiredKeywords: ["https://", "github.io"],
-                quiz: {
-                    q1: { question: "What's the final step before deployment?", options: [["Nothing", "wrong"], ["Test thoroughly", "correct"], ["Delete files"]], },
-                    q2: { question: "What should you check after deployment?", options: [["Nothing", "wrong"], ["All links and responsiveness", "correct"], ["Only homepage"]], },
-                    q3: "Congratulations! What's next after completing this course?"
-                }
-            }
+            1: { note: "Welcome to Day 1! Today, we focus on the skeleton of the web: HTML5.", link: "https://www.w3schools.com/html/html_intro.asp", practicalTask: "<strong>Task:</strong> Write an HTML heading (&lt;h1&gt;) that says 'Hello World' and a paragraph (&lt;p&gt;) that says 'I am learning'.", requiredKeywords: ["<h1>", "</h1>", "<p>", "</p>"], quiz: { q1: { question: "What does HTML stand for?", options: [["Hyper Text Making Language", "wrong"], ["Hyper Text Markup Language", "correct"], ["High Tech Modern Language", "wrong"]] }, q2: { question: "Which tag is used for the largest heading?", options: [["&lt;heading&gt;", "wrong"], ["&lt;h6&gt;", "wrong"], ["&lt;h1&gt;", "correct"]] }, q3: "Briefly explain the purpose of HTML in web development." } },
+            2: { note: "Day 2: HTML Elements & Attributes. Learn how to add properties like 'id', 'class', and 'title'.", link: "https://www.w3schools.com/html/html_elements.asp", practicalTask: "<strong>Task:</strong> Create a paragraph with a 'class' attribute set to 'intro' and a 'title' attribute set to 'About Me'.", requiredKeywords: ["<p", "class=", "title=", "</p>"], quiz: { q1: { question: "Which attribute specifies a unique id?", options: [["class", "wrong"], ["id", "correct"], ["name", "wrong"]] }, q2: { question: "Attributes are placed inside which part of the tag?", options: [["Closing tag", "wrong"], ["Opening tag", "correct"], ["Between tags", "wrong"]] }, q3: "What is the difference between the 'id' and 'class' attributes?" } },
+            3: { note: "Day 3: HTML Headings & Paragraphs. Master the hierarchy of text.", link: "https://www.w3schools.com/html/html_headings.asp", practicalTask: "<strong>Task:</strong> Create an &lt;h1&gt;, &lt;h2&gt;, and &lt;h3&gt; heading followed by a paragraph under each.", requiredKeywords: ["<h1>", "<h2>", "<h3>", "<p>", "</p>"], quiz: { q1: { question: "How many heading levels does HTML support?", options: [["4", "wrong"], ["6", "correct"], ["8", "wrong"]] }, q2: { question: "Which heading is the most important?", options: [["&lt;h6&gt;", "wrong"], ["&lt;h1&gt;", "correct"], ["&lt;head&gt;", "wrong"]] }, q3: "Why is heading hierarchy important for SEO?" } },
+            4: { note: "Day 4: HTML Formatting. Learn to make text bold, italic, underlined.", link: "https://www.w3schools.com/html/html_formatting.asp", practicalTask: "<strong>Task:</strong> Write a paragraph with a &lt;strong&gt; word, an &lt;em&gt; word, and a &lt;mark&gt; word.", requiredKeywords: ["<strong>", "</strong>", "<em>", "</em>", "<mark>", "</mark>"], quiz: { q1: { question: "Which tag makes text semantically important (bold)?", options: [["&lt;b&gt;", "wrong"], ["&lt;strong&gt;", "correct"], ["&lt;bold&gt;", "wrong"]] }, q2: { question: "Which tag is used for emphasized (italic) text?", options: [["&lt;i&gt;", "wrong"], ["&lt;em&gt;", "correct"], ["&lt;italic&gt;", "wrong"]] }, q3: "What is the difference between &lt;b&gt; and &lt;strong&gt;?" } },
+            5: { note: "Day 5: HTML Quotations & Code. Learn to display quotes and code snippets.", link: "https://www.w3schools.com/html/html_quotation_elements.asp", practicalTask: "<strong>Task:</strong> Use &lt;blockquote&gt; for a quote and &lt;code&gt; to show a code snippet.", requiredKeywords: ["<blockquote>", "</blockquote>", "<code>", "</code>"], quiz: { q1: { question: "Which tag defines a section quoted from another source?", options: [["&lt;quote&gt;", "wrong"], ["&lt;blockquote&gt;", "correct"], ["&lt;q&gt; only", "wrong"]] }, q2: { question: "Which tag preserves whitespace and line breaks?", options: [["&lt;code&gt;", "wrong"], ["&lt;pre&gt;", "correct"], ["&lt;space&gt;", "wrong"]] }, q3: "When would you use &lt;pre&gt; instead of &lt;code&gt;?" } },
+            6: { note: "Day 6: HTML Comments. Learn to leave notes in your code.", link: "https://www.w3schools.com/html/html_comments.asp", practicalTask: "<strong>Task:</strong> Write an HTML comment that says 'This is my first webpage' and then an &lt;h1&gt; below it.", requiredKeywords: ["<!--", "-->", "<h1>"], quiz: { q1: { question: "What is the correct HTML comment syntax?", options: [["// comment", "wrong"], ["&lt;!-- comment --&gt;", "correct"], ["# comment", "wrong"]] }, q2: { question: "Are HTML comments visible to users?", options: [["Yes", "wrong"], ["No", "correct"], ["Only on mobile", "wrong"]] }, q3: "Why are comments useful in web development?" } },
+            7: { note: "Day 7: HTML Links. Master hyperlinks with the &lt;a&gt; tag.", link: "https://www.w3schools.com/html/html_links.asp", practicalTask: "<strong>Task:</strong> Create a link to 'https://google.com' that opens in a new tab with text 'Visit Google'.", requiredKeywords: ["<a", "href=", "target=", "_blank", "</a>"], quiz: { q1: { question: "Which attribute specifies the URL of a link?", options: [["src", "wrong"], ["href", "correct"], ["link", "wrong"]] }, q2: { question: "How do you open a link in a new tab?", options: [["target='_self'", "wrong"], ["target='_blank'", "correct"], ["new='true'", "wrong"]] }, q3: "What is the difference between relative and absolute URLs?" } },
+            8: { note: "Day 8: HTML Images. Learn to display images with the &lt;img&gt; tag.", link: "https://www.w3schools.com/html/html_images.asp", practicalTask: "<strong>Task:</strong> Add an image with src='photo.jpg', alt='My photo', width='300'.", requiredKeywords: ["<img", "src=", "alt=", "width="], quiz: { q1: { question: "Which attribute is REQUIRED in an &lt;img&gt; tag?", options: [["width", "wrong"], ["alt", "correct"], ["title", "wrong"]] }, q2: { question: "Is &lt;img&gt; a self-closing tag?", options: [["No", "wrong"], ["Yes", "correct"], ["Only in HTML5", "wrong"]] }, q3: "Why is the 'alt' attribute important for accessibility?" } },
+            9: { note: "Day 9: HTML Lists. Master ordered (&lt;ol&gt;) and unordered (&lt;ul&gt;) lists.", link: "https://www.w3schools.com/html/html_lists.asp", practicalTask: "<strong>Task:</strong> Create an unordered list with 3 items and an ordered list with 2 items.", requiredKeywords: ["<ul>", "</ul>", "<ol>", "</ol>", "<li>", "</li>"], quiz: { q1: { question: "Which tag creates a numbered list?", options: [["&lt;ul&gt;", "wrong"], ["&lt;ol&gt;", "correct"], ["&lt;nl&gt;", "wrong"]] }, q2: { question: "What tag wraps each item in a list?", options: [["&lt;item&gt;", "wrong"], ["&lt;li&gt;", "correct"], ["&lt;list&gt;", "wrong"]] }, q3: "When would you use &lt;ol&gt; vs &lt;ul&gt;?" } },
+            10: { note: "Day 10: HTML Tables. Learn to structure data with &lt;table&gt;, &lt;tr&gt;, &lt;th&gt;, and &lt;td&gt;.", link: "https://www.w3schools.com/html/html_tables.asp", practicalTask: "<strong>Task:</strong> Create a table with 2 rows and 2 columns, including a header row with &lt;th&gt;.", requiredKeywords: ["<table>", "</table>", "<tr>", "<th>", "<td>"], quiz: { q1: { question: "Which tag defines a table row?", options: [["&lt;td&gt;", "wrong"], ["&lt;tr&gt;", "correct"], ["&lt;row&gt;", "wrong"]] }, q2: { question: "Which tag defines a table header cell?", options: [["&lt;th&gt;", "correct"], ["&lt;td&gt;", "wrong"], ["&lt;head&gt;", "wrong"]] }, q3: "What is the difference between &lt;th&gt; and &lt;td&gt;?" } },
+            11: { note: "Day 11: Introduction to CSS. Learn how CSS styles HTML elements.", link: "https://www.w3schools.com/css/css_intro.asp", practicalTask: "<strong>Task:</strong> Write CSS to make all &lt;p&gt; elements have color: blue and font-size: 16px.", requiredKeywords: ["p", "{", "color:", "blue", "font-size:", "16px"], quiz: { q1: { question: "What does CSS stand for?", options: [["Creative Style Sheets", "wrong"], ["Cascading Style Sheets", "correct"], ["Computer Style Sheets", "wrong"]] }, q2: { question: "Which is the correct CSS syntax?", options: [["p:color=blue", "wrong"], ["p {color: blue;}", "correct"], ["{p; color:blue}"]] }, q3: "Name the three ways to insert CSS into HTML." } },
+            12: { note: "Day 12: CSS Selectors. Master element, class (.), id (#), and universal (*) selectors.", link: "https://www.w3schools.com/css/css_selectors.asp", practicalTask: "<strong>Task:</strong> Write CSS to style a class '.highlight' with yellow background and an id '#main' with red text.", requiredKeywords: [".highlight", "background:", "yellow", "#main", "color:", "red"], quiz: { q1: { question: "How do you select an element with id 'demo'?", options: [[".demo", "wrong"], ["#demo", "correct"], ["demo"]] }, q2: { question: "How do you select elements with class 'test'?", options: [["#test", "wrong"], [".test", "correct"], ["test"]] }, q3: "What is the specificity order from lowest to highest?" } },
+            13: { note: "Day 13: CSS Colors. Learn hex, RGB, RGBA, HSL, and named colors.", link: "https://www.w3schools.com/css/css_colors.asp", practicalTask: "<strong>Task:</strong> Set a div's background to #3498db and text color to white using CSS.", requiredKeywords: ["background", "#3498db", "color", "white"], quiz: { q1: { question: "Which is a valid hex color?", options: [["#GG0000", "wrong"], ["#FF5733", "correct"], ["#12345G"]] }, q2: { question: "What does RGBA's 'A' stand for?", options: [["Angle", "wrong"], ["Alpha (opacity)", "correct"], ["Area"]] }, q3: "Explain the difference between RGB and HSL color models." } },
+            14: { note: "Day 14: CSS Backgrounds. Control background color, image, position, repeat, and size.", link: "https://www.w3schools.com/css/css_background.asp", practicalTask: "<strong>Task:</strong> Set a background image 'bg.jpg' that doesn't repeat and covers the element.", requiredKeywords: ["background-image", "background-repeat", "no-repeat", "background-size", "cover"], quiz: { q1: { question: "Which property sets the background image?", options: [["bg-img", "wrong"], ["background-image", "correct"], ["image-bg"]] }, q2: { question: "How do you prevent background image repeat?", options: [["background-repeat: none", "wrong"], ["background-repeat: no-repeat", "correct"], ["background: no-repeat"]] }, q3: "What does 'background-size: cover' do?" } },
+            15: { note: "Day 15: CSS Borders. Master border width, style, color, and border-radius.", link: "https://www.w3schools.com/css/css_border.asp", practicalTask: "<strong>Task:</strong> Create a div with a 2px solid blue border and 10px border-radius.", requiredKeywords: ["border:", "2px", "solid", "blue", "border-radius:", "10px"], quiz: { q1: { question: "Which is NOT a valid border style?", options: [["solid", "wrong"], ["dashed", "wrong"], ["thick", "correct"]] }, q2: { question: "How do you make a circular element?", options: [["border-radius: 100%", "correct"], ["border-radius: 50%", "wrong"], ["border: circle"]] }, q3: "How would you create a card with rounded corners?" } },
+            16: { note: "Day 16: CSS Margins & Padding. Understand spacing outside and inside elements.", link: "https://www.w3schools.com/css/css_margin.asp", practicalTask: "<strong>Task:</strong> Set a box with 20px margin, 15px padding, and 1px solid gray border.", requiredKeywords: ["margin:", "20px", "padding:", "15px", "border:"], quiz: { q1: { question: "What does margin control?", options: [["Space inside element", "wrong"], ["Space outside element", "correct"], ["Element width"]] }, q2: { question: "What does 'margin: 10px 20px' mean?", options: [["10px all sides", "wrong"], ["10px top/bottom, 20px left/right", "correct"], ["10px left/right, 20px top/bottom"]] }, q3: "Explain the CSS box model." } },
+            17: { note: "Day 17: CSS Height, Width & Box Model. Control element dimensions.", link: "https://www.w3schools.com/css/css_dimension.asp", practicalTask: "<strong>Task:</strong> Create a box with width: 300px, height: 200px, and box-sizing: border-box.", requiredKeywords: ["width:", "300px", "height:", "200px", "box-sizing:", "border-box"], quiz: { q1: { question: "What does box-sizing: border-box do?", options: [["Adds border only", "wrong"], ["Includes padding/border in width", "correct"], ["Removes margins"]] }, q2: { question: "Can you set max-width on an element?", options: [["No", "wrong"], ["Yes", "correct"], ["Only with JS"]] }, q3: "Why is box-sizing: border-box recommended?" } },
+            18: { note: "Day 18: CSS Text & Fonts. Control text alignment, decoration, and font families.", link: "https://www.w3schools.com/css/css_font.asp", practicalTask: "<strong>Task:</strong> Center-align text, make it uppercase, and set font-family to Arial.", requiredKeywords: ["text-align:", "center", "text-transform:", "uppercase", "font-family:", "arial"], quiz: { q1: { question: "How do you center text?", options: [["align: center", "wrong"], ["text-align: center", "correct"], ["text-center: true"]] }, q2: { question: "Which property makes text uppercase?", options: [["text-style: upper", "wrong"], ["text-transform: uppercase", "correct"], ["font-transform: cap"]] }, q3: "What is a web-safe font?" } },
+            19: { note: "Day 19: CSS Display Property. Master block, inline, inline-block, none, and flex.", link: "https://www.w3schools.com/css/css_display_visibility.asp", practicalTask: "<strong>Task:</strong> Make a span display as inline-block with width: 100px and height: 50px.", requiredKeywords: ["display:", "inline-block", "width:", "100px", "height:", "50px"], quiz: { q1: { question: "Which display value hides an element completely?", options: [["hidden", "wrong"], ["none", "correct"], ["invisible"]] }, q2: { question: "What is the default display of &lt;div&gt;?", options: [["inline", "wrong"], ["block", "correct"], ["inline-block"]] }, q3: "What is the difference between display:none and visibility:hidden?" } },
+            20: { note: "Day 20: CSS Positioning. Master static, relative, absolute, fixed, and sticky.", link: "https://www.w3schools.com/css/css_positioning.asp", practicalTask: "<strong>Task:</strong> Create a fixed navigation bar at the top with position: fixed, top: 0, width: 100%.", requiredKeywords: ["position:", "fixed", "top:", "0", "width:", "100%"], quiz: { q1: { question: "Which position is relative to the viewport?", options: [["absolute", "wrong"], ["fixed", "correct"], ["relative"]] }, q2: { question: "What is the default position value?", options: [["relative", "wrong"], ["static", "correct"], ["absolute"]] }, q3: "When would you use position: absolute vs fixed?" } },
+            21: { note: "Day 21: CSS Flexbox Introduction. Learn the powerful flex container for 1D layouts.", link: "https://www.w3schools.com/css/css3_flexbox.asp", practicalTask: "<strong>Task:</strong> Create a flex container with 3 items displayed in a row with space-between.", requiredKeywords: ["display:", "flex", "justify-content:", "space-between"], quiz: { q1: { question: "How do you create a flex container?", options: [["flex: true", "wrong"], ["display: flex", "correct"], ["position: flex"]] }, q2: { question: "Which property aligns items horizontally in a row?", options: [["align-items", "wrong"], ["justify-content", "correct"], ["flex-align"]] }, q3: "What is the default flex-direction?" } },
+            22: { note: "Day 22: Flexbox Alignment. Master justify-content, align-items, align-self, and flex-wrap.", link: "https://www.w3schools.com/css/css3_flexbox_alignment.asp", practicalTask: "<strong>Task:</strong> Center items both vertically and horizontally using flexbox.", requiredKeywords: ["display:", "flex", "justify-content:", "center", "align-items:", "center"], quiz: { q1: { question: "How do you center items vertically in flexbox?", options: [["justify-content: center", "wrong"], ["align-items: center", "correct"], ["vertical-align: middle"]] }, q2: { question: "What does flex-wrap: wrap do?", options: [["Prevents wrapping", "wrong"], ["Allows items to wrap", "correct"], ["Hides overflow"]] }, q3: "How do you center a div both ways using flexbox?" } },
+            23: { note: "Day 23: CSS Grid Introduction. Learn the powerful 2D layout system.", link: "https://www.w3schools.com/css/css_grid.asp", practicalTask: "<strong>Task:</strong> Create a 3-column grid with gap: 20px.", requiredKeywords: ["display:", "grid", "grid-template-columns:", "gap:", "20px"], quiz: { q1: { question: "How do you create a 3-column grid?", options: [["columns: 3", "wrong"], ["grid-template-columns: repeat(3, 1fr)", "correct"], ["grid: 3"]] }, q2: { question: "What does '1fr' mean?", options: [["1 pixel", "wrong"], ["1 fraction of available space", "correct"], ["1 frame"]] }, q3: "When would you use Grid vs Flexbox?" } },
+            24: { note: "Day 24: CSS Grid Areas. Name grid areas and place items in specific regions.", link: "https://www.w3schools.com/css/css_grid_container.asp", practicalTask: "<strong>Task:</strong> Create a grid with named areas: header, main, sidebar, footer.", requiredKeywords: ["grid-template-areas:", "header", "main", "sidebar", "footer"], quiz: { q1: { question: "Which property defines grid area names?", options: [["grid-areas", "wrong"], ["grid-template-areas", "correct"], ["area-names"]] }, q2: { question: "How do you place an item in a named area?", options: [["grid-area: name", "correct"], ["area: name", "wrong"], ["place: name"]] }, q3: "Create a basic holy grail layout using grid areas." } },
+            25: { note: "Day 25: Media Queries. Make your website responsive by applying styles based on screen size.", link: "https://www.w3schools.com/css/css_rwd_mediaqueries.asp", practicalTask: "<strong>Task:</strong> Write a media query that changes body background to blue on screens under 768px.", requiredKeywords: ["@media", "max-width:", "768px", "background:", "blue"], quiz: { q1: { question: "What is a media query used for?", options: [["Playing media", "wrong"], ["Responsive design", "correct"], ["Loading videos"]] }, q2: { question: "Which is the correct syntax?", options: ["@media (max-width: 768px) {}", "@screen 768px {}", "@responsive 768px {}"] }, q3: "What is mobile-first design?" } },
+            26: { note: "Day 26: Responsive Units. Master px, em, rem, %, vw, vh for fluid layouts.", link: "https://www.w3schools.com/css/css_rwd_units.asp", practicalTask: "<strong>Task:</strong> Set font-size using rem and width using vw for responsive design.", requiredKeywords: ["font-size:", "rem", "width:", "vw"], quiz: { q1: { question: "What does 1rem equal?", options: [["1 pixel", "wrong"], ["Root element font size", "correct"], ["10 pixels"]] }, q2: { question: "What does 100vw represent?", options: [["100 pixels", "wrong"], ["100% of viewport width", "correct"], ["100% of parent"]] }, q3: "Why use rem over px for font sizes?" } },
+            27: { note: "Day 27: Responsive Images. Make images scale properly using max-width: 100%.", link: "https://www.w3schools.com/css/css_rwd_images.asp", practicalTask: "<strong>Task:</strong> Make an image responsive with max-width: 100% and height: auto.", requiredKeywords: ["max-width:", "100%", "height:", "auto"], quiz: { q1: { question: "How do you make an image responsive?", options: [["width: 100%", "wrong"], ["max-width: 100%; height: auto", "correct"], ["responsive: true"]] }, q2: { question: "What does srcset do?", options: [["Sets source", "wrong"], ["Provides multiple image sizes", "correct"], ["Sets alt text"]] }, q3: "Why is max-width preferred over width for responsive images?" } },
+            28: { note: "Day 28: CSS Variables. Define reusable values with --variable-name and var().", link: "https://www.w3schools.com/css/css3_variables.asp", practicalTask: "<strong>Task:</strong> Define a --primary-color variable and use it on a button's background.", requiredKeywords: ["--primary-color:", "var(", "--primary-color"], quiz: { q1: { question: "How do you declare a CSS variable?", options: [["$color: blue", "wrong"], ["--color: blue", "correct"], ["var color = blue"]] }, q2: { question: "How do you use a CSS variable?", options: [["$(color)", "wrong"], ["var(--color)", "correct"], ["@color"]] }, q3: "Where should you define global CSS variables?" } },
+            29: { note: "Day 29: CSS Transitions & Animations. Add smooth effects with transition and @keyframes.", link: "https://www.w3schools.com/css/css3_transitions.asp", practicalTask: "<strong>Task:</strong> Create a button that smoothly changes background color over 0.3s on hover.", requiredKeywords: ["transition:", "0.3s", ":hover", "background"], quiz: { q1: { question: "Which property creates smooth changes?", options: [["animation", "wrong"], ["transition", "correct"], ["transform"]] }, q2: { question: "What defines keyframe animations?", options: ["@keyframes", "@animation", "@frames"] }, q3: "What is the difference between transition and animation?" } },
+            30: { note: "Day 30: CSS Transforms. Rotate, scale, skew, and translate elements in 2D and 3D.", link: "https://www.w3schools.com/css/css3_transforms.asp", practicalTask: "<strong>Task:</strong> Rotate a div 45deg and scale it to 1.2 on hover.", requiredKeywords: ["transform:", "rotate(", "45deg", "scale(", "1.2"], quiz: { q1: { question: "Which function rotates an element?", options: [["spin()", "wrong"], ["rotate()", "correct"], ["turn()"]] }, q2: { question: "What does scale(2) do?", options: [["Moves 2px", "wrong"], ["Doubles the size", "correct"], ["Rotates 2deg"]] }, q3: "How would you flip an element horizontally?" } },
+            31: { note: "Day 31: Introduction to JavaScript. Learn what JS is and write your first 'Hello World'.", link: "https://www.w3schools.com/js/js_intro.asp", practicalTask: "<strong>Task:</strong> Write a JavaScript alert that says 'Hello, World!'.", requiredKeywords: ["alert(", "hello", "world"], quiz: { q1: { question: "Where can JavaScript be placed in HTML?", options: [["Only in &lt;head&gt;", "wrong"], ["In &lt;head&gt; or &lt;body&gt;", "correct"], ["Only in &lt;body&gt;"]] }, q2: { question: "Which tag embeds JavaScript?", options: [["&lt;javascript&gt;", "wrong"], ["&lt;script&gt;", "correct"], ["&lt;js&gt;"]] }, q3: "What can JavaScript do that HTML/CSS cannot?" } },
+            32: { note: "Day 32: JavaScript Variables. Learn var, let, and const for storing data.", link: "https://www.w3schools.com/js/js_variables.asp", practicalTask: "<strong>Task:</strong> Declare a const 'name' with your name and a let 'age' with your age.", requiredKeywords: ["const", "name", "let", "age"], quiz: { q1: { question: "Which keyword declares a constant?", options: [["var", "wrong"], ["const", "correct"], ["let"]] }, q2: { question: "Can you reassign a const variable?", options: [["Yes", "wrong"], ["No", "correct"], ["Only with let"]] }, q3: "What is the difference between let and var?" } },
+            33: { note: "Day 33: JavaScript Data Types. Master strings, numbers, booleans, arrays, objects.", link: "https://www.w3schools.com/js/js_datatypes.asp", practicalTask: "<strong>Task:</strong> Create a string, a number, a boolean, and an array with 3 items.", requiredKeywords: ["const", "let", "true", "false", "[", "]"], quiz: { q1: { question: "Which is NOT a JS data type?", options: [["String", "wrong"], ["Character", "correct"], ["Boolean"]] }, q2: { question: "What is typeof null?", options: [["null", "wrong"], ["object", "correct"], ["undefined"]] }, q3: "Explain the difference between null and undefined." } },
+            34: { note: "Day 34: JavaScript Operators. Learn arithmetic, assignment, comparison, and logical operators.", link: "https://www.w3schools.com/js/js_operators.asp", practicalTask: "<strong>Task:</strong> Use +, -, *, / operators and ===, !== comparison operators.", requiredKeywords: ["+", "-", "*", "/", "===", "!=="], quiz: { q1: { question: "What does === check?", options: [["Value only", "wrong"], ["Value and type", "correct"], ["Type only"]] }, q2: { question: "What does '++' do?", options: [["Adds 2", "wrong"], ["Increments by 1", "correct"], ["Doubles"]] }, q3: "What is the difference between == and ===?" } },
+            35: { note: "Day 35: JavaScript Functions. Learn to create reusable blocks of code.", link: "https://www.w3schools.com/js/js_functions.asp", practicalTask: "<strong>Task:</strong> Write a function 'greet' that takes a name parameter and returns 'Hello, ' + name.", requiredKeywords: ["function", "greet", "return", "hello"], quiz: { q1: { question: "Which keyword creates a function?", options: [["func", "wrong"], ["function", "correct"], ["def"]] }, q2: { question: "What does 'return' do?", options: [["Ends the program", "wrong"], ["Outputs a value", "correct"], ["Loops"]] }, q3: "What is an arrow function?" } },
+            36: { note: "Day 36: JavaScript Conditionals. Control flow with if, else if, else, and switch.", link: "https://www.w3schools.com/js/js_if_else.asp", practicalTask: "<strong>Task:</strong> Write an if/else statement that checks if age >= 18 and logs 'Adult' or 'Minor'.", requiredKeywords: ["if", "else", ">=", "18"], quiz: { q1: { question: "What does 'else if' do?", options: [["Ends the block", "wrong"], ["Checks another condition", "correct"], ["Creates a loop"]] }, q2: { question: "Which is used for multiple conditions?", options: [["if", "wrong"], ["switch", "correct"], ["for"]] }, q3: "What is a ternary operator?" } },
+            37: { note: "Day 37: JavaScript Loops. Master for, while, do...while, and for...of loops.", link: "https://www.w3schools.com/js/js_loop_for.asp", practicalTask: "<strong>Task:</strong> Write a for loop that logs numbers 1 through 5.", requiredKeywords: ["for", "let", "console.log"], quiz: { q1: { question: "How many parts does a for loop have?", options: [["2", "wrong"], ["3", "correct"], ["4"]] }, q2: { question: "Which loop runs at least once?", options: [["for", "wrong"], ["do...while", "correct"], ["while"]] }, q3: "What is an infinite loop and how do you avoid it?" } },
+            38: { note: "Day 38: JavaScript Arrays. Learn to create, access, and manipulate arrays.", link: "https://www.w3schools.com/js/js_arrays.asp", practicalTask: "<strong>Task:</strong> Create an array of 3 fruits and use push() to add a 4th.", requiredKeywords: ["const", "[", "]", "push("], quiz: { q1: { question: "What index does the first array item have?", options: [["1", "wrong"], ["0", "correct"], ["-1"]] }, q2: { question: "Which method adds to the end?", options: [["pop()", "wrong"], ["push()", "correct"], ["add()"]] }, q3: "How do you loop through an array?" } },
+            39: { note: "Day 39: JavaScript Objects. Create objects with key-value pairs.", link: "https://www.w3schools.com/js/js_objects.asp", practicalTask: "<strong>Task:</strong> Create a person object with name, age, and city properties.", requiredKeywords: ["const", "{", "name:", "age:", "city:"], quiz: { q1: { question: "How do you access object property 'name'?", options: [["person[name]", "wrong"], ["person.name", "correct"], ["person->name"]] }, q2: { question: "What are object values called?", options: [["Keys", "wrong"], ["Properties", "correct"], ["Variables"]] }, q3: "What is the difference between dot and bracket notation?" } },
+            40: { note: "Day 40: JavaScript String Methods. Master length, toUpperCase, slice, split.", link: "https://www.w3schools.com/js/js_string_methods.asp", practicalTask: "<strong>Task:</strong> Use toUpperCase() and length on a string variable.", requiredKeywords: ["toUpperCase()", "length"], quiz: { q1: { question: "What does .length return?", options: [["The string", "wrong"], ["Number of characters", "correct"], ["First character"]] }, q2: { question: "Which method converts to uppercase?", options: [["upper()", "wrong"], ["toUpperCase()", "correct"], ["toUpper()"]] }, q3: "How do you extract part of a string?" } },
+            41: { note: "Day 41: The DOM. Learn how JavaScript interacts with HTML through the DOM tree.", link: "https://www.w3schools.com/js/js_htmldom.asp", practicalTask: "<strong>Task:</strong> Use document.getElementById() to get an element and change its textContent.", requiredKeywords: ["document.getelementbyid", "textcontent"], quiz: { q1: { question: "What does DOM stand for?", options: [["Data Object Model", "wrong"], ["Document Object Model", "correct"], ["Digital Object Map"]] }, q2: { question: "Which method selects by ID?", options: [["querySelector", "wrong"], ["getElementById", "correct"], ["getElement"]] }, q3: "What is the DOM tree?" } },
+            42: { note: "Day 42: DOM Selectors. Master querySelector, querySelectorAll, getElementsByClassName.", link: "https://www.w3schools.com/js/js_htmldom_elements.asp", practicalTask: "<strong>Task:</strong> Use querySelector('.btn') to select a button and querySelectorAll('p') to select all paragraphs.", requiredKeywords: ["queryselector", ".btn", "queryselectorall"], quiz: { q1: { question: "Which returns the FIRST match?", options: [["querySelectorAll", "wrong"], ["querySelector", "correct"], ["getElements"]] }, q2: { question: "What does querySelectorAll return?", options: [["Single element", "wrong"], ["NodeList", "correct"], ["Array"]] }, q3: "How do you loop through a NodeList?" } },
+            43: { note: "Day 43: Changing HTML Content. Modify innerHTML, textContent, and attributes dynamically.", link: "https://www.w3schools.com/js/js_htmldom_html.asp", practicalTask: "<strong>Task:</strong> Change an element's innerHTML to '&lt;strong&gt;Bold Text&lt;/strong&gt;'.", requiredKeywords: ["innerhtml", "<strong>", "bold"], quiz: { q1: { question: "What's the difference between innerHTML and textContent?", options: [["No difference", "wrong"], ["innerHTML parses HTML", "correct"], ["textContent is faster only"]] }, q2: { question: "Which is safer for user input?", options: [["innerHTML", "wrong"], ["textContent", "correct"], ["Both equal"]] }, q3: "What is XSS and how does innerHTML relate to it?" } },
+            44: { note: "Day 44: Changing CSS with JavaScript. Modify styles dynamically.", link: "https://www.w3schools.com/js/js_htmldom_css.asp", practicalTask: "<strong>Task:</strong> Change an element's color to red and fontSize to 20px using JS.", requiredKeywords: ["style", "color", "red", "fontsize", "20px"], quiz: { q1: { question: "How do you change background color in JS?", options: [["element.bgColor", "wrong"], ["element.style.backgroundColor", "correct"], ["element.css.bg"]] }, q2: { question: "Why 'fontSize' not 'font-size'?", options: [["CSS rule", "wrong"], ["CamelCase in JS", "correct"], ["No reason"]] }, q3: "How do you toggle a CSS class with JS?" } },
+            45: { note: "Day 45: JavaScript Events. Learn click, mouseover, keydown, submit, and other event types.", link: "https://www.w3schools.com/js/js_events.asp", practicalTask: "<strong>Task:</strong> Add a click event listener to a button that shows an alert.", requiredKeywords: ["addeventlistener", "click", "alert"], quiz: { q1: { question: "Which method adds an event?", options: [["onClick()", "wrong"], ["addEventListener()", "correct"], ["addEvent()"]] }, q2: { question: "What is an event handler?", options: [["The event itself", "wrong"], ["The function that runs", "correct"], ["The HTML element"]] }, q3: "What is event bubbling?" } },
+            46: { note: "Day 46: Event Handling. Master event objects, preventDefault(), and event delegation.", link: "https://www.w3schools.com/js/js_events_input.asp", practicalTask: "<strong>Task:</strong> Create a form that uses preventDefault() to stop submission and log input values.", requiredKeywords: ["addeventlistener", "submit", "preventdefault"], quiz: { q1: { question: "What does preventDefault() do?", options: [["Stops JS", "wrong"], ["Prevents default browser action", "correct"], ["Deletes element"]] }, q2: { question: "What is 'event.target'?", options: [["The window", "wrong"], ["The element that triggered it", "correct"], ["The parent"]] }, q3: "What is event delegation?" } },
+            47: { note: "Day 47: Creating & Removing Elements. Dynamically add and remove DOM nodes.", link: "https://www.w3schools.com/js/js_htmldom_nodes.asp", practicalTask: "<strong>Task:</strong> Create a new &lt;li&gt; element and append it to a &lt;ul&gt;.", requiredKeywords: ["createelement", "li", "appendchild"], quiz: { q1: { question: "Which method creates a new element?", options: [["newElement()", "wrong"], ["createElement()", "correct"], ["addElement()"]] }, q2: { question: "How do you add it to the DOM?", options: [["add()", "wrong"], ["appendChild()", "correct"], ["insert()"]] }, q3: "How do you remove an element from the DOM?" } },
+            48: { note: "Day 48: Form Validation. Validate user input before submission using JavaScript.", link: "https://www.w3schools.com/js/js_validation.asp", practicalTask: "<strong>Task:</strong> Validate that an email input contains '@' before form submission.", requiredKeywords: ["includes", "@"], quiz: { q1: { question: "When should validation happen?", options: [["Only server-side", "wrong"], ["Both client and server", "correct"], ["Only client-side"]] }, q2: { question: "Which method checks for substring?", options: [["contains()", "wrong"], ["includes()", "correct"], ["has()"]] }, q3: "Why is server-side validation still needed?" } },
+            49: { note: "Day 49: LocalStorage. Save data in the browser that persists across page reloads.", link: "https://www.w3schools.com/js/js_web_storage.asp", practicalTask: "<strong>Task:</strong> Save a username to localStorage and retrieve it.", requiredKeywords: ["localstorage.setitem", "localstorage.getitem"], quiz: { q1: { question: "Does localStorage persist after closing the browser?", options: [["No", "wrong"], ["Yes", "correct"], ["Only 24 hours"]] }, q2: { question: "What data type does localStorage store?", options: [["Objects", "wrong"], ["Strings", "correct"], ["Any type"]] }, q3: "What is the storage limit of localStorage?" } },
+            50: { note: "Day 50: JavaScript Timers. Master setTimeout, setInterval, and clearTimeout.", link: "https://www.w3schools.com/js/js_timing.asp", practicalTask: "<strong>Task:</strong> Use setTimeout to show an alert after 3 seconds.", requiredKeywords: ["settimeout", "3000"], quiz: { q1: { question: "What unit does setTimeout use?", options: [["Seconds", "wrong"], ["Milliseconds", "correct"], ["Minutes"]] }, q2: { question: "How do you stop a setInterval?", options: [["stopInterval()", "wrong"], ["clearInterval()", "correct"], ["endInterval()"]] }, q3: "What is the difference between setTimeout and setInterval?" } },
+            51: { note: "Day 51: Introduction to Git. Learn version control concepts: repository, commit.", link: "https://www.w3schools.com/git/git_intro.asp", practicalTask: "<strong>Task:</strong> Write the Git commands to initialize a repo and make your first commit.", requiredKeywords: ["git init", "git add", "git commit"], quiz: { q1: { question: "What does Git track?", options: [["Images only", "wrong"], ["Code changes", "correct"], ["Databases"]] }, q2: { question: "What is a commit?", options: [["A push", "wrong"], ["A snapshot of changes", "correct"], ["A branch"]] }, q3: "Why is version control important?" } },
+            52: { note: "Day 52: Git Basics. Master git add, git commit, git status, and git log.", link: "https://www.w3schools.com/git/git_commit.asp", practicalTask: "<strong>Task:</strong> Write commands to add all files, commit with message 'Initial commit', and view log.", requiredKeywords: ["git add", "git commit", "-m", "git log"], quiz: { q1: { question: "What does 'git add .' do?", options: [["Deletes files", "wrong"], ["Stages all changes", "correct"], ["Commits"]] }, q2: { question: "What is the staging area?", options: [["GitHub", "wrong"], ["Where changes wait to be committed", "correct"], ["The final repo"]] }, q3: "How do you view commit history?" } },
+            53: { note: "Day 53: GitHub. Learn to create remote repos, push code, and collaborate.", link: "https://www.w3schools.com/git/git_remote_push.asp", practicalTask: "<strong>Task:</strong> Write commands to add a remote origin and push to GitHub.", requiredKeywords: ["git remote add", "origin", "git push"], quiz: { q1: { question: "What is GitHub?", options: [["A text editor", "wrong"], ["A Git hosting platform", "correct"], ["A browser"]] }, q2: { question: "What does 'git push' do?", options: [["Downloads code", "wrong"], ["Uploads commits to remote", "correct"], ["Deletes repo"]] }, q3: "What is a pull request?" } },
+            54: { note: "Day 54: Git Branches. Learn to create branches for features and merge them safely.", link: "https://www.w3schools.com/git/git_branch.asp", practicalTask: "<strong>Task:</strong> Write commands to create a branch 'feature', switch to it, and merge back.", requiredKeywords: ["git branch", "git checkout", "git merge"], quiz: { q1: { question: "What is the default branch name?", options: [["master only", "wrong"], ["main or master", "correct"], ["develop"]] }, q2: { question: "How do you switch branches?", options: [["git switch", "wrong"], ["git checkout", "correct"], ["Both work"]] }, q3: "What is a merge conflict?" } },
+            55: { note: "Day 55: Web Hosting Basics. Understand domains, DNS, and hosting providers.", link: "https://www.w3schools.com/whatis/whatis_hosting.asp", practicalTask: "<strong>Task:</strong> Write a short paragraph explaining the difference between domain and hosting.", requiredKeywords: ["domain", "hosting"], quiz: { q1: { question: "What is a domain name?", options: [["Server IP", "wrong"], ["Human-readable website address", "correct"], ["A file"]] }, q2: { question: "What does DNS do?", options: [["Stores files", "wrong"], ["Translates domains to IPs", "correct"], ["Encrypts data"]] }, q3: "Name 3 popular web hosting providers." } },
+            56: { note: "Day 56: Deploying with GitHub Pages. Host your static website for free.", link: "https://pages.github.com/", practicalTask: "<strong>Task:</strong> Describe the steps to deploy an HTML file to GitHub Pages.", requiredKeywords: ["settings", "pages", "main"], quiz: { q1: { question: "Is GitHub Pages free?", options: [["No", "wrong"], ["Yes, for public repos", "correct"], ["Only paid"]] }, q2: { question: "What files does GitHub Pages host?", options: [["Databases", "wrong"], ["Static HTML/CSS/JS", "correct"], ["PHP files"]] }, q3: "How do you enable GitHub Pages?" } },
+            57: { note: "Day 57: Deploying with Netlify/Vercel. Modern platforms for deploying frontend apps.", link: "https://www.netlify.com/", practicalTask: "<strong>Task:</strong> Write the steps to deploy a site to Netlify via GitHub integration.", requiredKeywords: ["netlify", "github", "deploy"], quiz: { q1: { question: "What is continuous deployment?", options: [["Manual uploads", "wrong"], ["Auto-deploy on git push", "correct"], ["Weekly deploys"]] }, q2: { question: "Does Netlify offer free SSL?", options: [["No", "wrong"], ["Yes", "correct"], ["Only paid"]] }, q3: "Name 3 deployment platforms." } },
+            58: { note: "Day 58: Final Project Planning. Plan your capstone project: a personal portfolio website.", link: "https://www.freecodecamp.org/learn/2022/responsive-web-design/#build-a-personal-portfolio-webpage-project", practicalTask: "<strong>Task:</strong> Create the HTML skeleton for a portfolio with header, about, projects, and contact sections.", requiredKeywords: ["<header>", "<section", "id=", "<footer>"], quiz: { q1: { question: "What should a portfolio include?", options: [["Only code", "wrong"], ["Projects, about, contact", "correct"], ["Just images"]] }, q2: { question: "Why use semantic HTML?", options: [["Looks better", "wrong"], ["SEO and accessibility", "correct"], ["Faster loading"]] }, q3: "List 5 key sections of a portfolio." } },
+            59: { note: "Day 59: Final Project Build. Build and style your portfolio using everything you've learned!", link: "https://www.freecodecamp.org/learn/2022/responsive-web-design/", practicalTask: "<strong>Task:</strong> Add CSS to style your portfolio with flexbox/grid and responsive design.", requiredKeywords: ["display:", "flex", "grid", "@media"], quiz: { q1: { question: "What makes a portfolio responsive?", options: [["Fixed widths", "wrong"], ["Media queries and fluid units", "correct"], ["Only mobile CSS"]] }, q2: { question: "Should you test on mobile?", options: [["No", "wrong"], ["Yes, always", "correct"], ["Only desktop"]] }, q3: "What tools help you test responsiveness?" } },
+            60: { note: "Day 60: Final Project Deployment & Review. Deploy your portfolio and prepare for the final exam!", link: "https://pages.github.com/", practicalTask: "<strong>Task:</strong> Deploy your portfolio to GitHub Pages and write the live URL.", requiredKeywords: ["https://", "github.io"], quiz: { q1: { question: "What's the final step before deployment?", options: [["Nothing", "wrong"], ["Test thoroughly", "correct"], ["Delete files"]] }, q2: { question: "What should you check after deployment?", options: [["Nothing", "wrong"], ["All links and responsiveness", "correct"], ["Only homepage"]] }, q3: "Congratulations! What's next after completing this course?" } }
         };
 
         // ============================================
@@ -1031,7 +481,6 @@
         function showView(viewId) {
             document.querySelectorAll('.lms-view').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-            
             if(viewId === 'view-quiz') loadQuiz();
             if(viewId === 'view-practical') loadPracticalChallenge();
         }
@@ -1096,33 +545,27 @@
                 document.getElementById('daily-content').style.display = 'block';
                 document.getElementById('completed-content').style.display = 'none';
                 
-                const dayData = curriculum[studentState.currentDay];
+                const dayData = curriculum[studentState.currentDay] || curriculum[1];
                 document.getElementById('teacher-note-day').textContent = studentState.currentDay;
                 document.getElementById('teacher-note-text').innerHTML = dayData.note;
                 document.getElementById('external-lesson-link').href = dayData.link;
             }
         }
 
-        // ============================================
-        // DYNAMIC QUIZ LOADER
-        // ============================================
         function loadQuiz() {
-            const dayData = curriculum[studentState.currentDay];
+            const dayData = curriculum[studentState.currentDay] || curriculum[1];
             document.getElementById('quiz-day').textContent = studentState.currentDay;
             
-            // Question 1
             document.getElementById('q1-label').textContent = `1. ${dayData.quiz.q1.question}`;
             document.getElementById('q1-options').innerHTML = dayData.quiz.q1.options.map(opt => 
                 `<label class="quiz-option"><input type="radio" name="q1" value="${opt[1]}"> ${opt[0]}</label>`
             ).join('');
             
-            // Question 2
             document.getElementById('q2-label').textContent = `2. ${dayData.quiz.q2.question}`;
             document.getElementById('q2-options').innerHTML = dayData.quiz.q2.options.map(opt => 
                 `<label class="quiz-option"><input type="radio" name="q2" value="${opt[1]}"> ${opt[0]}</label>`
             ).join('');
             
-            // Theory question
             document.getElementById('q3-label').textContent = `3. ${dayData.quiz.q3} (Theory)`;
         }
 
@@ -1141,11 +584,8 @@
             return false;
         }
 
-        // ============================================
-        // PRACTICAL CODE CHALLENGE
-        // ============================================
         function loadPracticalChallenge() {
-            const dayData = curriculum[studentState.currentDay];
+            const dayData = curriculum[studentState.currentDay] || curriculum[1];
             document.getElementById('practical-day').textContent = studentState.currentDay;
             document.getElementById('practical-instruction').innerHTML = dayData.practicalTask;
             document.getElementById('code-input').value = '';
@@ -1159,7 +599,7 @@
 
         function submitPracticalCode() {
             const code = document.getElementById('code-input').value.toLowerCase();
-            const dayData = curriculum[studentState.currentDay];
+            const dayData = curriculum[studentState.currentDay] || curriculum[1];
             const required = dayData.requiredKeywords;
 
             const missingKeywords = required.filter(keyword => !code.includes(keyword.toLowerCase()));
@@ -1175,9 +615,6 @@
             }
         }
 
-        // ============================================
-        // FINAL EXAM & CERTIFICATE
-        // ============================================
         function generateCertificate() {
             const finalQ = document.querySelector('input[name="final-q"]:checked');
             if (!finalQ || finalQ.value !== 'correct') { alert('Incorrect answer. Try again.'); return; }
@@ -1190,14 +627,20 @@
         function renderCertificate() {
             const emailName = studentState.email.split('@')[0];
             const formattedName = emailName.charAt(0).toUpperCase() + emailName.slice(1).replace('.', ' ');
+            
             document.getElementById('cert-name').textContent = formattedName;
-            document.getElementById('cert-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('cert-date').textContent = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', month: 'long', day: 'numeric' 
+            });
+            
             const certId = 'ABN-' + Math.random().toString(36).substr(2, 9).toUpperCase();
             document.getElementById('cert-id').textContent = certId;
+            document.getElementById('cert-id-footer').textContent = certId;
+            
             document.getElementById('qrcode').innerHTML = '';
             new QRCode(document.getElementById('qrcode'), {
-                text: `https://abn-tech.com/verify?id=${certId}&student=${formattedName}`,
-                width: 100, height: 100, colorDark: "#1e293b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H
+                text: `https://abn-tech.com/verify?id=${certId}&student=${encodeURIComponent(formattedName)}`,
+                width: 120, height: 120, colorDark: "#1e293b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H
             });
         }
     </script>
