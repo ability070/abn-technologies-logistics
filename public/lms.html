@@ -195,7 +195,7 @@
             <div class="lms-card">
                 <h2>Master Web Development Academy</h2>
                 <p>Welcome! Review your enrollment details below.</p>
-                <div class="price-tag">₦150,000 <span style="font-size: 1rem; color: var(--gray); font-weight: normal;">(One-time payment)</span></div>
+                <div class="price-tag">₦100 <span style="font-size: 1rem; color: var(--gray); font-weight: normal;">(One-time payment)</span></div>
                 <h3 style="margin-top: 30px;">📚 60-Day Curriculum Overview:</h3>
                 <ul class="syllabus-list">
                     <li>Days 1-10: HTML5 Fundamentals & Semantic Structure</li>
@@ -356,7 +356,7 @@
                         <div class="qr-text">
                             <strong>🔒 Verify Authenticity</strong>
                             Scan this QR code or visit<br>
-                            <span style="color: #2563eb; font-weight: 600;">abn-tech.com/verify</span><br>
+                            <span style="color: #2563eb; font-weight: 600;">abnwebtech.online/verify</span><br>
                             Certificate ID: <span id="cert-id" style="font-family: 'Courier New', monospace;"></span>
                         </div>
                     </div>
@@ -506,7 +506,7 @@
         function initiatePayment() {
             let handler = PaystackPop.setup({
                 key: 'pk_live_e8b893fa426ea57e8090d77b75bc4430cd88c4b9', 
-                email: studentState.email, amount: 150000 * 100, currency: 'NGN',
+                email: studentState.email, amount: 100 * 100, currency: 'NGN',
                 ref: 'ABN_LMS_' + Math.floor((Math.random() * 1000000000) + 1),
                 callback: function(response) {
                     alert('Payment successful! Reference: ' + response.reference);
@@ -639,7 +639,7 @@
             
             document.getElementById('qrcode').innerHTML = '';
             new QRCode(document.getElementById('qrcode'), {
-                text: `https://abn-tech.com/verify?id=${certId}&student=${encodeURIComponent(formattedName)}`,
+                text: `https://abnwebtech.online/verify?id=${certId}&student=${encodeURIComponent(formattedName)}`,
                 width: 120, height: 120, colorDark: "#1e293b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H
             });
         }
