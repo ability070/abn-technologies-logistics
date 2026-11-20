@@ -204,7 +204,7 @@
                     <li>Days 31-40: JavaScript Basics (Variables, Functions, Loops)</li>
                     <li>Days 41-50: DOM Manipulation & Interactive Web Pages</li>
                     <li>Days 51-60: Git, GitHub, Deployment & Final Capstone</li>
-                    <li>day 60 issuing of completion of course certificate.</li>
+                    <li>Day 60: Issuing of completion of course certificate</li>
                 </ul>
                 <button class="btn btn-success" onclick="initiatePayment()">💳 Pay Securely with Paystack</button>
             </div>
@@ -233,11 +233,14 @@
             </div>
         </div>
 
-        <!-- VIEW 4: DASHBOARD -->
+        <!-- VIEW 4: DASHBOARD (UPDATED WITH WELCOME MESSAGE) -->
         <div id="view-dashboard" class="lms-view">
             <div class="lms-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                    <h2>Classroom Dashboard</h2>
+                    <div>
+                        <h2>Classroom Dashboard</h2>
+                        <p style="color: var(--gray); margin-top: 5px;">Welcome back, <span id="user-name-display" style="color: var(--primary); font-weight: 600;">Student</span>! 👋</p>
+                    </div>
                     <button class="btn" style="width: auto; background: var(--gray); font-size: 0.9rem;" onclick="logout()">Logout</button>
                 </div>
                 <div style="margin: 20px 0;">
@@ -363,8 +366,6 @@
                     </div>
                     <div class="certificate-signature">
                         <div class="signature-block">
-                            <!-- EMBEDDED ABN SIGNATURE (Base64 SVG) -->
-                            <!-- To use your own real signature, change the src below to: src="signature.png" -->
                             <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCAxNTAgNjAiPjx0ZXh0IHg9IjEwIiB5PSI0NSIgZm9udC1mYW1pbHk9IidTZWdvZSBTY3JpcHQnLCAnQnJ1c2ggU2NyaXB0IE1UJywgY3Vyc2l2ZSIgZm9udC1zaXplPSI0MCIgZmlsbD0iIzI1NjNlYiIgZm9udC13ZWlnaHQ9ImJvbGQiPkFCTjwvdGV4dD48cGF0aCBkPSJNIDE1IDUwIFEgNzUgNjAgMTM1IDQ1IiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMi41IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=" alt="ABN Signature" class="signature-image">
                             <div class="signature-line">
                                 <p class="signature-name">Ikechukwu Nwoke</p>
@@ -535,6 +536,14 @@
         function startClass() { updateDashboard(); showView('view-dashboard'); }
 
         function updateDashboard() {
+            // --- NEW: Update welcome message with user's name ---
+            if (studentState.email) {
+                const emailName = studentState.email.split('@')[0];
+                const formattedName = emailName.charAt(0).toUpperCase() + emailName.slice(1).replace('.', ' ');
+                const nameDisplay = document.getElementById('user-name-display');
+                if (nameDisplay) nameDisplay.textContent = formattedName;
+            }
+
             const progress = (studentState.currentDay / studentState.totalDays) * 100;
             document.getElementById('progress-bar').style.width = progress + '%';
             document.getElementById('progress-text').textContent = `Day ${studentState.currentDay} of ${studentState.totalDays}`;
