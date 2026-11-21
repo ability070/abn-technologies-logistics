@@ -17,7 +17,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <style>
-        /* [ALL YOUR EXISTING CSS REMAINS EXACTLY THE SAME] */
         :root { --primary: #2563eb; --dark: #1e293b; --light: #f8fafc; --gray: #64748b; --whatsapp: #25D366; --success: #10b981; --paystack: #0ba4db; --bg-color: #f8fafc; --card-bg: #ffffff; --text-color: #1e293b; --header-bg: #ffffff; --border-color: #e2e8f0; }
         [data-theme="dark"] { --bg-color: #0f172a; --card-bg: #1e293b; --text-color: #f1f5f9; --header-bg: #1e293b; --border-color: #334155; --gray: #94a3b8; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -337,31 +336,39 @@
     </div>
 
     <script>
-      // 1. Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyDQXRaJceFQRYf2oqhx7OvaOFtMCLoEwuw",
-    authDomain: "abn-academy.firebaseapp.com",
-    projectId: "abn-academy",
-    storageBucket: "abn-academy.firebasestorage.app",
-    messagingSenderId: "157217801362",
-    appId: "1:157217801362:web:dea3689762413042f0d24b"
-};
+        // ============================================
+        // 1. FIREBASE CONFIGURATION & INITIALIZATION
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQXRaJceFQRYf2oqhx7OvaOFtMCLoEwuw",
+            authDomain: "abn-academy.firebaseapp.com",
+            projectId: "abn-academy",
+            storageBucket: "abn-academy.firebasestorage.app",
+            messagingSenderId: "157217801362",
+            appId: "1:157217801362:web:dea3689762413042f0d24b"
+        };
 
-// 2. Initialize Firebase (Compat mode)
-firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-// 3. Initialize Services
-const auth = firebase.auth();
-const db = firebase.firestore();
+        // FORCE LOGIN EVERY TIME (Clears session immediately)
+        auth.setPersistence(firebase.auth.Auth.Persistence.NONE)
+          .then(() => {
+              console.log("✅ Persistence set to NONE. Users must log in every time they open the page.");
+          })
+          .catch((error) => {
+              console.error("Error setting persistence:", error);
+          });
 
-console.log("✅ Firebase connected successfully!");
+        console.log("✅ Firebase connected successfully!");
+
         // ============================================
         // 2. GLOBAL STATE & CURRICULUM
         // ============================================
         let currentUserData = null;
         let isLoginMode = true;
 
-        // (Curriculum object remains exactly the same as before, truncated here for brevity but keep your full 60-day object)
         const curriculum = {
             1: { note: "Welcome to Day 1! Today, we focus on the skeleton of the web: HTML5.", link: "https://www.w3schools.com/html/html_intro.asp", practicalTask: "<strong>Task:</strong> Write an HTML heading (&lt;h1&gt;) that says 'Hello World' and a paragraph (&lt;p&gt;) that says 'I am learning'.", requiredKeywords: ["<h1>", "</h1>", "<p>", "</p>"], quiz: { q1: { question: "What does HTML stand for?", options: [["Hyper Text Making Language", "wrong"], ["Hyper Text Markup Language", "correct"], ["High Tech Modern Language", "wrong"]] }, q2: { question: "Which tag is used for the largest heading?", options: [["&lt;heading&gt;", "wrong"], ["&lt;h6&gt;", "wrong"], ["&lt;h1&gt;", "correct"]] }, q3: "Briefly explain the purpose of HTML in web development." } },
             // ... [KEEP ALL YOUR DAYS 2 THROUGH 60 EXACTLY AS THEY WERE] ...
@@ -372,14 +379,17 @@ console.log("✅ Firebase connected successfully!");
         // 3. AUTHENTICATION & DATABASE LOGIC
         // ============================================
         
-        // Listen for auth state changes (runs on page load)
+        // Listen for auth state changes (runs on page load) - UPDATED WITH CONSOLE LOGS
         auth.onAuthStateChanged((user) => {
             document.getElementById('loading-overlay').style.display = 'none';
+            
             if (user) {
+                console.log("✅ User is currently logged in as:", user.email);
                 // User is logged in, fetch their data from Firestore
                 fetchUserData(user.uid);
             } else {
-                // User is logged out
+                console.log("⚠️ No active session. Showing login screen.");
+                // Force show login screen
                 showView('view-login');
             }
         });
