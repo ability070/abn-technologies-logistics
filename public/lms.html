@@ -95,7 +95,8 @@
         .auth-toggle { text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--gray); }
         .auth-toggle a { color: var(--primary); cursor: pointer; font-weight: 600; }
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; color: var(--primary); font-weight: bold; }
-                /* --- WHATSAPP FLOATING CHAT STYLES --- */
+        
+        /* --- WHATSAPP FLOATING CHAT STYLES --- */
         .whatsapp-float {
             position: fixed;
             bottom: 30px;
@@ -122,7 +123,6 @@
             height: 32px;
             fill: white;
         }
-        /* Tooltip that appears on hover */
         .whatsapp-float::before {
             content: "Chat with us on WhatsApp!";
             position: absolute;
@@ -146,7 +146,7 @@
         @media (max-width: 768px) {
             .whatsapp-float { bottom: 20px; right: 20px; width: 55px; height: 55px; }
             .whatsapp-float svg { width: 28px; height: 28px; }
-            .whatsapp-float::before { display: none; } /* Hide tooltip on mobile */
+            .whatsapp-float::before { display: none; }
         }
     </style>
 </head>
@@ -405,7 +405,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // FORCE LOGIN EVERY TIME (Clears session immediately)
         auth.setPersistence(firebase.auth.Auth.Persistence.NONE)
           .then(() => {
               console.log("✅ Persistence set to NONE. Users must log in every time they open the page.");
@@ -431,18 +430,13 @@
         // ============================================
         // 3. AUTHENTICATION & DATABASE LOGIC
         // ============================================
-        
-        // Listen for auth state changes (runs on page load) - UPDATED WITH CONSOLE LOGS
         auth.onAuthStateChanged((user) => {
             document.getElementById('loading-overlay').style.display = 'none';
-            
             if (user) {
                 console.log("✅ User is currently logged in as:", user.email);
-                // User is logged in, fetch their data from Firestore
                 fetchUserData(user.uid);
             } else {
                 console.log("⚠️ No active session. Showing login screen.");
-                // Force show login screen
                 showView('view-login');
             }
         });
@@ -473,7 +467,6 @@
                     userCredential = await auth.signInWithEmailAndPassword(email, password);
                 } else {
                     userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                    // Create initial user document in Firestore
                     const name = email.split('@')[0].replace('.', ' ');
                     await db.collection('users').doc(userCredential.user.uid).set({
                         email: email,
@@ -486,7 +479,6 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
-                // onAuthStateChanged will handle the redirect
             } catch (error) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 alert('Authentication Error: ' + error.message);
@@ -513,7 +505,6 @@
             if (!auth.currentUser) return;
             try {
                 await db.collection('users').doc(auth.currentUser.uid).update(updates);
-                // Update local state immediately for smooth UI
                 currentUserData = { ...currentUserData, ...updates };
             } catch (error) {
                 console.error("Error updating user data:", error);
@@ -522,7 +513,6 @@
         }
 
         function updateUIBasedOnState() {
-            // Update welcome name
             const nameDisplay = document.getElementById('user-name-display');
             if (nameDisplay && currentUserData.name) {
                 const formattedName = currentUserData.name.charAt(0).toUpperCase() + currentUserData.name.slice(1);
@@ -557,7 +547,46 @@
             if(viewId === 'view-practical') loadPracticalChallenge();
         }
 
-        
+        // ✅ FIXED PAYSTACK FUNCTION (Removed 'async' from callback)
+        function initiatePayment() {
+            if (!currentUserData) {
+                alert('Please log in first to proceed with payment.');
+                return;
+            }
+            
+            try {
+                let handler = PaystackPop.setup({
+                    key: 'pk_live_e8b893fa426ea57e8090d77b75bc4430cd88c4b9', 
+                    email: currentUserData.email, 
+                    amount: 100 * 100, // ₦5,000 in kobo
+                    currency: 'NGN',
+                    ref: 'ABN_LMS_' + Math.floor((Math.random() * 1000000000) + 1),
+                    
+                    // ✅ CHANGED: Standard function instead of 'async function'
+                    callback: function(response) {
+                        alert('✅ Payment successful!\nReference: ' + response.reference);
+                        
+                        // Call the async function normally using .then()
+                        updateUserData({ hasPaid: true }).then(() => {
+                            showView('view-schedule');
+                        }).catch(err => {
+                            console.error("Error saving payment status:", err);
+                            alert("Payment successful, but there was an error saving your progress. Please contact support.");
+                        });
+                    },
+                    
+                    onClose: function() { 
+                        console.log('Payment window closed by user.');
+                    }
+                });
+                
+                handler.openIframe();
+                
+            } catch (error) {
+                console.error("Paystack Initialization Error:", error);
+                alert("Could not load payment window.\n\nError: " + error.message);
+            }
+        }
 
         function calculateSchedule() {
             const hours = document.getElementById('study-hours').value;
@@ -691,7 +720,8 @@
             });
         }
     </script>
-        <!-- WhatsApp Floating Chat Button -->
+    
+    <!-- WhatsApp Floating Chat Button -->
     <a href="https://wa.me/2349152004538?text=Hi!%20I%20visited%20the%20ABN%20Academy%20website%20and%20want%20to%20know%20more%20about%20the%20Web%20Development%20course." 
        class="whatsapp-float" 
        target="_blank" 
@@ -702,7 +732,5 @@
         </svg>
     </a>
 
-</body>
-</html>
 </body>
 </html>
