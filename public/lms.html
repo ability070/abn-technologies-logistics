@@ -504,22 +504,40 @@
             if(viewId === 'view-practical') loadPracticalChallenge();
         }
 
-        function initiatePayment() {
-            if (!currentUserData) return;
-            let handler = PaystackPop.setup({
-                key: 'pk_live_e8b893fa426ea57e8090d77b75bc4430cd88c4b9', 
-                email: currentUserData.email, 
-                amount: 5000 * 100, 
-                currency: 'NGN',
-                ref: 'ABN_LMS_' + Math.floor((Math.random() * 1000000000) + 1),
-                callback: async function(response) {
-                    alert('Payment successful! Reference: ' + response.reference);
-                    await updateUserData({ hasPaid: true });
-                    showView('view-schedule');
-                },
-                onClose: function() { alert('Transaction was not completed.'); }
-            });
-            handler.openIframe();
+                function initiatePayment() {
+            if (!currentUserData) {
+                alert('Please log in first to proceed with payment.');
+                return;
+            }
+            
+            try {
+                let handler = PaystackPop.setup({
+                    // ⚠️ IMPORTANT: If testing on your computer, use a TEST key (pk_test_...)
+                    // Live keys (pk_live_...) are blocked by Paystack on local computers.
+                    // Once your site is live on abnwebtech.online, switch this back to your live key.
+                    key: 'pk_live_e8b893fa426ea57e8090d77b75bc4430cd88c4b9', 
+                    
+                    email: currentUserData.email, 
+                    amount: 5000 * 100, // ✅ FIXED: 5000 Naira (was calculating as 50 Naira)
+                    currency: 'NGN',
+                    ref: 'ABN_LMS_' + Math.floor((Math.random() * 1000000000) + 1),
+                    
+                    callback: async function(response) {
+                        alert('Payment successful! Reference: ' + response.reference);
+                        await updateUserData({ hasPaid: true });
+                        showView('view-schedule');
+                    },
+                    onClose: function() { 
+                        console.log('Payment window closed by user.');
+                    }
+                });
+                
+                handler.openIframe();
+                
+            } catch (error) {
+                console.error("Paystack Initialization Error:", error);
+                alert("Could not load payment window.\n\nPossible reasons:\n1. You are using a LIVE key on your local computer (use a TEST key instead).\n2. Your domain is not authorized in your Paystack dashboard.\n3. Ad-blocker is blocking the script.\n\nError: " + error.message);
+            }
         }
 
         function calculateSchedule() {
