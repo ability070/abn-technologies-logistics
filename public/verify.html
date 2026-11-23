@@ -7,6 +7,10 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico"> 
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --primary: #2563eb; --dark: #1e293b; --light: #f8fafc; --gray: #64748b;
@@ -89,7 +93,6 @@
             .detail-row { flex-direction: column; gap: 5px; }
             .detail-value { text-align: left; }
         }
-    each
     </style>
 </head>
 <body>
@@ -136,7 +139,7 @@
                             <span class="detail-value">Ikechukwu Nwoke (CEO)</span>
                         </div>
                     </div>
-                    <a href="https://abn-tech.com" class="btn">Visit ABN Technologies</a>
+                    <a href="index.html" class="btn">Visit ABN Academy</a>
                 </div>
 
                 <!-- Invalid State -->
@@ -164,35 +167,64 @@
 
     <script>
         // ==========================================
-        // CERTIFICATE VERIFICATION LOGIC
+        // REAL CERTIFICATE VERIFICATION LOGIC
         // ==========================================
+        
+        // 1. Your Firebase Config (Must match lms.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQXRaJceFQRYf2oqhx7OvaOFtMCLoEwuw",
+            authDomain: "abn-academy.firebaseapp.com",
+            projectId: "abn-academy",
+            storageBucket: "abn-academy.firebasestorage.app",
+            messagingSenderId: "157217801362",
+            appId: "1:157217801362:web:dea3689762413042f0d24b"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Get URL parameters (e.g., ?id=ABN-X7K9P2M&student=JohnDoe)
             const urlParams = new URLSearchParams(window.location.search);
             const certId = urlParams.get('id');
             const studentName = urlParams.get('student');
 
-            // 2. Simulate a brief network request for realism
-            setTimeout(() => {
-                document.getElementById('loading-state').style.display = 'none';
+            if (!certId) {
+                showInvalid("Missing ID");
+                return;
+            }
 
-                // 3. Validation Logic
-                // In a real app, this would be an API call: fetch(`/api/verify?id=${certId}`)
-                // For this prototype, we validate the format and simulate a successful check
-                const isValidFormat = /^ABN-[A-Z0-9]{9}$/.test(certId);
+            // 2. Query the REAL database for this Certificate ID
+            db.collection('users').where('certId', '==', certId).get()
+                .then((snapshot) => {
+                    document.getElementById('loading-state').style.display = 'none';
 
-                if (certId && studentName && isValidFormat) {
-                    // SUCCESS: Show Verified State
-                    document.getElementById('verified-state').style.display = 'block';
-                    document.getElementById('v-student').textContent = decodeURIComponent(studentName);
-                    document.getElementById('v-id').textContent = certId;
-                } else {
-                    // FAILURE: Show Invalid State
-                    document.getElementById('invalid-state').style.display = 'block';
-                    document.getElementById('i-id').textContent = certId || 'Missing ID';
-                }
-            }, 1500); // 1.5 second fake loading delay
+                    if (!snapshot.empty) {
+                        // SUCCESS: Found in database!
+                        const userData = snapshot.docs[0].data();
+                        
+                        document.getElementById('verified-state').style.display = 'block';
+                        // Use the actual name from the database to prevent URL tampering
+                        const realName = userData.name.charAt(0).toUpperCase() + userData.name.slice(1);
+                        document.getElementById('v-student').textContent = realName;
+                        document.getElementById('v-id').textContent = certId;
+                    } else {
+                        // FAILURE: ID format might be right, but it doesn't exist in DB
+                        showInvalid(certId);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Verification error:", error);
+                    // If Firebase asks you to create an index, it will provide a link in the console.
+                    // For now, fallback to invalid state if query fails
+                    showInvalid(certId);
+                });
         });
+
+        function showInvalid(id) {
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('invalid-state').style.display = 'block';
+            document.getElementById('i-id').textContent = id || 'Missing ID';
+        }
     </script>
 </body>
 </html>
