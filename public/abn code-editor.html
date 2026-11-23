@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ABN Code Editor | Multi-Language IDE</title>
+<style>
+:root{--bg-dark:#1e1e1e;--bg-sidebar:#252526;--accent:#007acc;--text-main:#d4d4d4;--text-muted:#858585;--border:#3e3e42;--success:#4ec9b0;--error:#f48771}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg-dark);color:var(--text-main);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.toolbar{height:50px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 15px;flex-shrink:0}
+.logo{font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:8px}
+.logo span:first-child{color:var(--accent)}
+.controls{display:flex;gap:10px;align-items:center}
+select{background:var(--bg-dark);color:var(--text-main);border:1px solid var(--border);padding:6px 10px;border-radius:4px;font-size:.9rem;cursor:pointer;outline:none}
+select:focus{border-color:var(--accent)}
+.btn-run{background:var(--success);color:#1e1e1e;border:none;padding:6px 16px;border-radius:4px;font-weight:600;font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s}
+.btn-run:hover{background:#3aa890}
+.btn-run:disabled{opacity:.6;cursor:not-allowed}
+.workspace{display:flex;flex:1;overflow:hidden;position:relative}
+.editor-container{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--border);min-width:0;position:relative}
+.pane-header{height:35px;background:var(--bg-sidebar);display:flex;align-items:center;padding:0 15px;font-size:.85rem;color:var(--text-muted);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.5px;font-weight:600;flex-shrink:0}
+#editor{flex:1;width:100%;min-height:300px;position:relative}
+.editor-loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:var(--text-muted);z-index:10}
+.spinner{width:40px;height:40px;border:4px solid var(--border);border-top:4px solid var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.preview-container{flex:1;display:flex;flex-direction:column;background:#fff;min-width:0}
+.preview-container.console-mode{background:var(--bg-dark)}
+#output-frame{flex:1;border:none;width:100%;height:100%;background:#fff}
+#console-output{flex:1;padding:15px;font-family:Consolas,Monaco,'Courier New',monospace;font-size:.9rem;overflow-y:auto;white-space:pre-wrap;word-wrap:break-word;display:none}
+.console-error{color:var(--error)}.console-success{color:var(--success)}.console-info{color:var(--text-muted);font-style:italic}
+@media (max-width:768px){.workspace{flex-direction:column}.editor-container{border-right:none;border-bottom:1px solid var(--border)}.logo-text-full{display:none}.toolbar{padding:0 10px}.btn-run span{display:none}}
+@media (min-width:769px){.logo-text-short{display:none}}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <div class="logo"><span>⚡</span><span class="logo-text-full">ABN Code Editor</span><span class="logo-text-short">ABN IDE</span></div>
+  <div class="controls">
+    <select id="language-select">
+      <option value="web">Web (HTML / CSS / JS)</option>
+      <option value="python">Python</option>
+      <option value="javascript">JavaScript</option>
+      <option value="java">Java</option>
+      <option value="cpp">C++</option>
+      <option value="c">C</option>
+    </select>
+    <button class="btn-run" id="run-btn" onclick="runCode()">▶ <span>Run Code</span></button>
+  </div>
+</div>
+<div class="workspace">
+  <div class="editor-container">
+    <div class="pane-header"><span id="file-name">index.html</span></div>
+    <div id="editor"><div class="editor-loader" id="editor-loader"><div class="spinner"></div><p>Loading Code Editor...</p></div></div>
+  </div>
+  <div class="preview-container" id="preview-container">
+    <div class="pane-header"><span id="output-title">Live Preview</span></div>
+    <iframe id="output-frame" sandbox="allow-scripts allow-modals"></iframe>
+    <div id="console-output"></div>
+  </div>
+</div>
+
+<script>
+let editor=null, editorReady=false, pyodide=null;
+
+const defaultCodes={
+  web:`<h1>Hello, ABN Student! 👋</h1>\n<p>Welcome to your live web editor.</p>\n\n<style>\n  body { font-family: sans-serif; text-align: center; padding: 50px; color: #333; }\n  h1 { color: #007acc; }\n</style>\n\n<script>\n  console.log("Web page loaded successfully!");\n<\/script>`,
+  python:`# Welcome to Python!\nprint("Hello, ABN Student! 👋")\n\nname = "Developer"\nprint(f"Welcome to the {name} environment.")\n\nfor i in range(1, 4):\n    print(f"Counting: {i}")`,
+  javascript:`// Welcome to JavaScript\nconsole.log("Hello, ABN Student! 👋");\n\nconst greet = (name) => \`Welcome, \${name}!\`;\nconsole.log(greet("Developer"));`,
+  java:`public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, ABN Student! 👋");\n        System.out.println("Welcome to Java.");\n    }\n}`,
+  cpp:`#include <iostream>\n\nint main() {\n    std::cout << "Hello, ABN Student! 👋" << std::endl;\n    std::cout << "Welcome to C++." << std::endl;\n    return 0;\n}`,
+  c:`#include <stdio.h>\n\nint main() {\n    printf("Hello, ABN Student! 👋\\n");\n    printf("Welcome to C.\\n");\n    return 0;\n}`
+};
+const fileNames={web:'index.html',python:'script.py',javascript:'app.js',java:'Main.java',cpp:'main.cpp',c:'main.c'};
+const monacoLanguages={web:'html',python:'python',javascript:'javascript',java:'java',cpp:'cpp',c:'c'};
+
+// Remote compilers: Judge0 CE (primary) and Wandbox (fallback)
+const judge0Ids={java:62,cpp:54,c:50};
+const wandboxCompilers={java:'openjdk-head',cpp:'gcc-head',c:'gcc-head-c'};
+
+(function loadMonaco(){
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js';
+  s.onload=()=>{require.config({paths:{vs:'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs'}});setTimeout(initEditor,100)};
+  s.onerror=()=>{document.getElementById('editor-loader').innerHTML='<p style="color:#f48771">❌ Failed to load editor. Please refresh.</p>'};
+  document.head.appendChild(s);
+})();
+
+function initEditor(){
+  require(['vs/editor/editor.main'],function(){
+    document.getElementById('editor-loader')?.remove();
+    editor=monaco.editor.create(document.getElementById('editor'),{
+      value:defaultCodes.web,language:'html',theme:'vs-dark',automaticLayout:true,fontSize:14,
+      minimap:{enabled:false},scrollBeyondLastLine:false,padding:{top:10},wordWrap:'on',tabSize:2,insertSpaces:true
+    });
+    editorReady=true;
+  });
+}
+
+const languageSelect=document.getElementById('language-select');
+const previewContainer=document.getElementById('preview-container');
+const outputFrame=document.getElementById('output-frame');
+const consoleOutput=document.getElementById('console-output');
+
+languageSelect.addEventListener('change',e=>{
+  const lang=e.target.value;
+  if(editor&&editorReady){
+    monaco.editor.setModelLanguage(editor.getModel(),monacoLanguages[lang]);
+    editor.setValue(defaultCodes[lang]);
+  }
+  document.getElementById('file-name').textContent=fileNames[lang];
+  const web=lang==='web';
+  previewContainer.classList.toggle('console-mode',!web);
+  outputFrame.style.display=web?'block':'none';
+  consoleOutput.style.display=web?'none':'block';
+  document.getElementById('output-title').textContent=web?'Live Preview':'Console Output';
+  if(!web) consoleOutput.innerHTML='<span class="console-info">Click "Run Code" to see the output here.</span>';
+});
+
+function escapeHtml(t){return String(t??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function out(text,cls){consoleOutput.innerHTML+=`<span class="${cls}">${escapeHtml(text)}</span>`}
+function info(msg){consoleOutput.innerHTML=`<span class="console-info">${msg}</span>`}
+
+// ---------- JavaScript: runs locally in a sandboxed iframe ----------
+function runJS(code){
+  return new Promise(resolve=>{
+    const f=document.createElement('iframe');
+    f.sandbox='allow-scripts';f.style.display='none';
+    const id='r'+Date.now();
+    const done=()=>{window.removeEventListener('message',onMsg);f.remove();clearTimeout(t);resolve()};
+    const onMsg=e=>{
+      if(e.source!==f.contentWindow||!e.data||e.data.id!==id) return;
+      if(e.data.type==='log') out(e.data.text+'\n','console-success');
+      else if(e.data.type==='err') out(e.data.text+'\n','console-error');
+      else if(e.data.type==='done') done();
+    };
+    window.addEventListener('message',onMsg);
+    const t=setTimeout(()=>{out('\nTimed out after 10 seconds.\n','console-error');done()},10000);
+    const safe=JSON.stringify(code).replace(/</g,'\\u003c');
+    f.srcdoc=`<script>
+      const send=(type,text)=>parent.postMessage({id:'${id}',type,text},'*');
+      const fmt=a=>a.map(x=>{try{return typeof x==='object'?JSON.stringify(x,null,2):String(x)}catch(_){return String(x)}}).join(' ');
+      console.log=(...a)=>send('log',fmt(a));console.info=console.log;
+      console.warn=(...a)=>send('log','⚠ '+fmt(a));
+      console.error=(...a)=>send('err',fmt(a));
+      (async()=>{try{await (new (Object.getPrototypeOf(async function(){}).constructor)(${safe}))()}
+        catch(e){send('err',e&&e.stack?e.stack:String(e))}
+        setTimeout(()=>send('done'),50)})();
+    <\/script>`;
+    document.body.appendChild(f);
+  });
+}
+
+// ---------- Python: runs locally via Pyodide (WebAssembly) ----------
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Could not load '+src));document.head.appendChild(s)})}
+async function runPython(code){
+  if(!pyodide){
+    info('Loading Python runtime (first run only, ~10 MB)...');
+    if(!window.loadPyodide) await loadScript('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js');
+    pyodide=await loadPyodide();
+  }
+  consoleOutput.innerHTML='';
+  pyodide.setStdout({batched:s=>out(s+'\n','console-success')});
+  pyodide.setStderr({batched:s=>out(s+'\n','console-error')});
+  try{ await pyodide.runPythonAsync(code); }
+  catch(e){ out(String(e.message||e)+'\n','console-error'); }
+}
+
+// ---------- Java / C / C++: compiled on a free online compiler ----------
+async function viaJudge0(lang,code){
+  const r=await fetch('https://ce.judge0.com/submissions?base64_encoded=false&wait=true',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({language_id:judge0Ids[lang],source_code:code,cpu_time_limit:5})
+  });
+  if(!r.ok) throw new Error('Judge0 returned HTTP '+r.status);
+  const d=await r.json();
+  return {stdout:d.stdout||'',stderr:[d.compile_output,d.stderr,d.message].filter(Boolean).join('\n')};
+}
+async function viaWandbox(lang,code){
+  const r=await fetch('https://wandbox.org/api/compile.json',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({compiler:wandboxCompilers[lang],code,save:false})
+  });
+  if(!r.ok) throw new Error('Wandbox returned HTTP '+r.status);
+  const d=await r.json();
+  return {stdout:d.program_output||'',stderr:[d.compiler_error,d.program_error].filter(Boolean).join('\n')};
+}
+async function runRemote(lang,code){
+  info('Compiling and running on server...');
+  let res;
+  try{ res=await viaJudge0(lang,code); }
+  catch(e1){
+    try{ res=await viaWandbox(lang,code); }
+    catch(e2){
+      consoleOutput.innerHTML='';
+      out('Network Error: could not reach any compiler server.\n'+e1.message+'\n'+e2.message+'\n','console-error');
+      out('\n💡 Check your internet connection or disable ad-blockers for this page.','console-info');
+      return;
+    }
+  }
+  consoleOutput.innerHTML='';
+  if(res.stdout) out(res.stdout,'console-success');
+  if(res.stderr) out((res.stdout?'\n':'')+res.stderr,'console-error');
+  if(!res.stdout&&!res.stderr) out('Code executed successfully with no output.','console-info');
+}
+
+async function runCode(){
+  if(!editor||!editorReady){alert('Editor is still loading. Please wait a moment.');return}
+  const lang=languageSelect.value, code=editor.getValue(), btn=document.getElementById('run-btn');
+  btn.disabled=true;btn.innerHTML='⏳ <span>Running...</span>';
+  try{
+    if(lang==='web') outputFrame.srcdoc=code;
+    else if(lang==='javascript'){consoleOutput.innerHTML='';await runJS(code)}
+    else if(lang==='python') await runPython(code);
+    else await runRemote(lang,code);
+  }catch(e){
+    consoleOutput.innerHTML='';out(String(e.message||e),'console-error');
+  }finally{
+    btn.disabled=false;btn.innerHTML='▶ <span>Run Code</span>';
+  }
+}
+</script>
+</body>
+</html>
