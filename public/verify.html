@@ -128,7 +128,8 @@
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Course Completed</span>
-                            <span class="detail-value">Master Web Development</span>
+                            <!-- UPDATED: Added ID so JavaScript can change this dynamically -->
+                            <span class="detail-value" id="v-course">-</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Certificate ID</span>
@@ -167,11 +168,11 @@
 
     <script>
         // ==========================================
-        // REAL CERTIFICATE VERIFICATION LOGIC
+        // DUAL DATABASE CERTIFICATE VERIFICATION
         // ==========================================
         
-        // 1. Your Firebase Config (Must match lms.html)
-        const firebaseConfig = {
+        // 1. Web Development Firebase Config
+        const webDevConfig = {
             apiKey: "AIzaSyDQXRaJceFQRYf2oqhx7OvaOFtMCLoEwuw",
             authDomain: "abn-academy.firebaseapp.com",
             projectId: "abn-academy",
@@ -180,45 +181,73 @@
             appId: "1:157217801362:web:dea3689762413042f0d24b"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // 2. Cyber Security Firebase Config 
+        // ⚠️ IMPORTANT: Replace these placeholder values with your NEW Cyber Security Firebase keys!
+        const cyberConfig = {
+            apiKey: "YOUR_NEW_CYBER_API_KEY",
+            authDomain: "your-new-cyber-project.firebaseapp.com",
+            projectId: "your-new-cyber-project",
+            storageBucket: "your-new-cyber-project.firebasestorage.app",
+            messagingSenderId: "YOUR_NEW_MESSAGING_SENDER_ID",
+            appId: "YOUR_NEW_APP_ID"
+        };
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // Initialize both apps with unique names so they don't conflict
+        const webDevApp = firebase.initializeApp(webDevConfig, "web-dev-verify-app");
+        const cyberApp = firebase.initializeApp(cyberConfig, "cyber-verify-app");
+
+        const webDevDb = webDevApp.firestore();
+        const cyberDb = cyberApp.firestore();
+
+        document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const certId = urlParams.get('id');
-            const studentName = urlParams.get('student');
 
             if (!certId) {
                 showInvalid("Missing ID");
                 return;
             }
 
-            // 2. Query the REAL database for this Certificate ID
-            db.collection('users').where('certId', '==', certId).get()
-                .then((snapshot) => {
-                    document.getElementById('loading-state').style.display = 'none';
+            try {
+                // STEP 1: Check the Web Development Database
+                const webDevSnapshot = await webDevDb.collection('users').where('certId', '==', certId).get();
+                
+                if (!webDevSnapshot.empty) {
+                    // Found it! It's a Web Dev certificate
+                    showVerified(webDevSnapshot.docs[0].data(), "Master Web Development");
+                    return;
+                }
 
-                    if (!snapshot.empty) {
-                        // SUCCESS: Found in database!
-                        const userData = snapshot.docs[0].data();
-                        
-                        document.getElementById('verified-state').style.display = 'block';
-                        // Use the actual name from the database to prevent URL tampering
-                        const realName = userData.name.charAt(0).toUpperCase() + userData.name.slice(1);
-                        document.getElementById('v-student').textContent = realName;
-                        document.getElementById('v-id').textContent = certId;
-                    } else {
-                        // FAILURE: ID format might be right, but it doesn't exist in DB
-                        showInvalid(certId);
-                    }
-                })
-                .catch((error) => {
-                    console.error("Verification error:", error);
-                    // If Firebase asks you to create an index, it will provide a link in the console.
-                    // For now, fallback to invalid state if query fails
-                    showInvalid(certId);
-                });
+                // STEP 2: If not found, check the Cyber Security Database
+                const cyberSnapshot = await cyberDb.collection('users').where('certId', '==', certId).get();
+                
+                if (!cyberSnapshot.empty) {
+                    // Found it! It's a Cyber Security certificate
+                    showVerified(cyberSnapshot.docs[0].data(), "Introduction to Cyber Security");
+                    return;
+                }
+
+                // STEP 3: If neither database has it, it's fake
+                showInvalid(certId);
+
+            } catch (error) {
+                console.error("Verification error:", error);
+                showInvalid(certId);
+            }
         });
+
+        function showVerified(userData, courseName) {
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('verified-state').style.display = 'block';
+            
+            // Capitalize first letter of name
+            const realName = userData.name.charAt(0).toUpperCase() + userData.name.slice(1);
+            
+            // Populate the dynamic fields
+            document.getElementById('v-student').textContent = realName;
+            document.getElementById('v-course').textContent = courseName; // This now changes based on the course!
+            document.getElementById('v-id').textContent = userData.certId;
+        }
 
         function showInvalid(id) {
             document.getElementById('loading-state').style.display = 'none';

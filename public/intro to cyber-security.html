@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABN Academy | Introduction to Cyber Security</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico"> 
+    
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root { --primary: #2563eb; --dark: #1e293b; --light: #f8fafc; --gray: #64748b; --whatsapp: #25D366; --success: #10b981; --paystack: #0ba4db; --bg-color: #f8fafc; --card-bg: #ffffff; --text-color: #1e293b; --header-bg: #ffffff; --border-color: #e2e8f0; }
+        [data-theme="dark"] { --bg-color: #0f172a; --card-bg: #1e293b; --text-color: #f1f5f9; --header-bg: #1e293b; --border-color: #334155; --gray: #94a3b8; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; transition: background-color 0.3s ease, color 0.3s ease; }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .btn { display: inline-block; padding: 12px 24px; background: var(--primary); color: white; border-radius: 8px; transition: 0.3s; font-weight: bold; text-align: center; border: none; cursor: pointer; width: 100%; margin-top: 10px; text-decoration: none;}
+        .btn:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #059669; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
+        header { background: var(--header-bg); box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .logo-container { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 45px; height: 45px; border-radius: 10px; }
+        .logo-text { font-size: 1.3rem; font-weight: 700; color: var(--text-color); }
+        .lms-view { display: none; padding: 40px 0; animation: fadeIn 0.5s ease; }
+        .lms-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .lms-card { background: var(--card-bg); border-radius: 16px; padding: 40px; border: 1px solid var(--border-color); box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .lms-card h2 { text-align: left; margin-bottom: 20px; color: var(--primary); font-size: 1.8rem; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-color); font-size: 1rem; }
+        .form-control:focus { outline: none; border-color: var(--primary); }
+        .syllabus-list { list-style: none; margin: 20px 0; }
+        .syllabus-list li { padding: 10px 0; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .syllabus-list li::before { content: "✓"; color: var(--success); font-weight: bold; }
+        .price-tag { font-size: 2.5rem; font-weight: 800; color: var(--primary); text-align: center; margin: 20px 0; }
+        .progress-container { background: var(--border-color); border-radius: 10px; height: 12px; margin: 20px 0; overflow: hidden; }
+        .progress-bar { background: linear-gradient(90deg, var(--success), var(--primary)); height: 100%; width: 0%; transition: width 0.5s ease; }
+        .teacher-note { background: #eff6ff; border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+        [data-theme="dark"] .teacher-note { background: #1e3a8a; }
+        .teacher-note h4 { color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .external-link-box { background: var(--dark); color: white; padding: 20px; border-radius: 12px; text-align: center; margin: 20px 0; }
+        .external-link-box p { margin-bottom: 15px; color: #cbd5e1; }
+        .quiz-option { display: block; padding: 12px; margin: 8px 0; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .quiz-option:hover { border-color: var(--primary); background: rgba(37, 99, 235, 0.05); }
+        .quiz-option input { margin-right: 10px; }
+        .code-editor-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .editor-pane, .preview-pane { display: flex; flex-direction: column; }
+        .pane-header { display: flex; justify-content: space-between; align-items: center; background: #0f172a; color: #94a3b8; padding: 10px 15px; border-radius: 8px 8px 0 0; font-size: 0.9rem; font-weight: 600; }
+        .pane-header .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+        .dot-red { background: #ef4444; } .dot-yellow { background: #f59e0b; } .dot-green { background: #10b981; }
+        .code-textarea { width: 100%; min-height: 350px; background: #1e293b; color: #e2e8f0; border: 1px solid #334155; border-top: none; border-radius: 0 0 8px 8px; padding: 15px; font-family: 'Courier New', Courier, monospace; font-size: 0.95rem; resize: vertical; outline: none; line-height: 1.5; tab-size: 2; }
+        .code-textarea:focus { border-color: var(--primary); }
+        .preview-frame { width: 100%; min-height: 350px; background: white; color: #1e293b; border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 8px 8px; padding: 15px; overflow: auto; }
+        .task-instruction { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 500; }
+        [data-theme="dark"] .task-instruction { background: #14532d; border-color: #166534; color: #bbf7d0; }
+        
+        .result-box { padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 0.95rem; }
+        .result-fail { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+        .req-list { list-style: none; columns: 2; column-gap: 20px; margin: 8px 0 16px; font-size: 0.9rem; }
+        .req-list li { padding: 3px 0; break-inside: avoid; }
+        .req-list li::before { content: "\2610  "; color: var(--gray); }
+        iframe.preview-frame { display: block; }
+        @media (max-width: 768px) { .req-list { columns: 1; } }
+
+        @media (max-width: 768px) { 
+            .lms-card { padding: 20px; } 
+            .code-editor-wrapper { grid-template-columns: 1fr; } 
+        }
+        /* ---------- CERTIFICATE ---------- */
+        .certificate-container { max-width: 297mm; margin: 20px auto; container-type: inline-size; }
+        .certificate { position: relative; width: 100%; aspect-ratio: 297 / 210; box-sizing: border-box; padding: max(18px, 4.2cqw) max(20px, 5.5cqw); background: radial-gradient(circle at 50% 40%, #ffffff 0%, #fdfcf8 65%, #f5f2e7 100%); border: max(5px, 1cqw) solid #1e3a8a; box-shadow: 0 10px 30px rgba(0,0,0,0.18); display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; color: #1e293b; overflow: hidden; font-family: Georgia, 'Times New Roman', serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .certificate::before { content: ""; position: absolute; inset: max(6px, 1.5cqw); border: max(1.5px, 0.25cqw) solid #c9a227; pointer-events: none; }
+        .certificate::after { content: ""; position: absolute; inset: max(10px, 2.3cqw); border: 1px solid rgba(201, 162, 39, 0.45); pointer-events: none; }
+        .cert-corner { position: absolute; width: max(8px, 1.6cqw); height: max(8px, 1.6cqw); background: #c9a227; z-index: 2; }
+        .cert-corner.tl { top: max(6px, 1.5cqw); left: max(6px, 1.5cqw); transform: translate(-50%, -50%) rotate(45deg); }
+        .cert-corner.tr { top: max(6px, 1.5cqw); right: max(6px, 1.5cqw); transform: translate(50%, -50%) rotate(45deg); }
+        .cert-corner.bl { bottom: max(6px, 1.5cqw); left: max(6px, 1.5cqw); transform: translate(-50%, 50%) rotate(45deg); }
+        .cert-corner.br { bottom: max(6px, 1.5cqw); right: max(6px, 1.5cqw); transform: translate(50%, 50%) rotate(45deg); }
+        .cert-watermark { position: absolute; top: 50%; left: 50%; width: 42%; transform: translate(-50%, -50%); opacity: 0.045; pointer-events: none; z-index: 0; }
+        .cert-head, .cert-body, .cert-footer, .cert-bottom { position: relative; z-index: 1; }
+        .cert-head { display: flex; flex-direction: column; align-items: center; }
+        .certificate-logo { width: max(40px, 6.2cqw); height: max(40px, 6.2cqw); border-radius: 12px; margin: 0 auto; }
+        .cert-org { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; text-transform: uppercase; letter-spacing: 0.35em; font-size: max(9px, 1.05cqw); font-weight: 700; color: #9a7415; margin-top: max(4px, 0.7cqw); padding-left: 0.35em; }
+        .certificate h1 { font-family: Georgia, 'Times New Roman', serif; font-size: max(22px, 4.8cqw); line-height: 1.1; color: #1e3a8a; letter-spacing: 0.03em; font-weight: 700; margin: max(4px, 0.8cqw) 0 0; }
+        .cert-divider { display: flex; align-items: center; gap: 1cqw; width: min(60%, 40cqw); color: #c9a227; font-size: max(8px, 1.1cqw); margin: max(5px, 1cqw) auto 0; }
+        .cert-divider::before, .cert-divider::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #c9a227); }
+        .cert-divider::after { background: linear-gradient(270deg, transparent, #c9a227); }
+        .cert-body { display: flex; flex-direction: column; align-items: center; }
+        .certificate .certify-text { font-size: max(11px, 1.45cqw); line-height: 1.5; color: #475569; font-style: italic; max-width: 68cqw; }
+        .certificate .student-name { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: 700; font-size: max(24px, 4.6cqw); line-height: 1.2; color: #0f172a; min-width: 38cqw; max-width: 80cqw; padding: 0 3cqw max(2px, 0.4cqw); margin: max(6px, 1cqw) 0; border-bottom: max(2px, 0.25cqw) solid #c9a227; }
+        .certificate h3 { font-family: Georgia, 'Times New Roman', serif; font-size: max(16px, 2.7cqw); letter-spacing: 0.04em; color: #2563eb; margin: max(5px, 0.8cqw) 0 0; }
+        .cert-footer { width: 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 2cqw; }
+        .cert-col { text-align: center; }
+        .cert-above-line { min-height: max(34px, 5.6cqw); display: flex; align-items: flex-end; justify-content: center; font-size: max(12px, 1.6cqw); color: #1e293b; font-weight: 600; }
+        .cert-line { border-top: max(1px, 0.15cqw) solid #1e293b; width: 82%; margin: 0 auto; padding-top: max(3px, 0.5cqw); }
+        .cert-cap { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: max(9px, 1.05cqw); text-transform: uppercase; letter-spacing: 0.15em; color: #64748b; font-weight: 600; }
+        .cert-cap strong { display: block; color: #1e293b; font-size: max(10px, 1.25cqw); letter-spacing: 0.1em; }
+        .cert-signature { width: max(110px, 17cqw); height: auto; display: block; margin: 0 auto; }
+        .cert-qr { display: flex; flex-direction: column; align-items: center; }
+        #qrcode { width: max(76px, 10.5cqw); height: max(76px, 10.5cqw); padding: max(3px, 0.5cqw); background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+        #qrcode canvas { display: none !important; }
+        #qrcode img { display: block !important; width: 100% !important; height: auto !important; }
+        #qrcode .qr-fallback { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9px; color: #475569; word-break: break-all; }
+        .cert-qr .cert-cap { margin-top: max(3px, 0.5cqw); }
+        .cert-qr .cert-id { font-family: 'Courier New', monospace; font-size: max(9px, 1.05cqw); color: #475569; margin-top: 2px; letter-spacing: 0; text-transform: none; }
+        .cert-bottom { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: max(9px, 1cqw); color: #94a3b8; margin-top: max(4px, 0.8cqw); }
+        .cert-bottom span { color: #2563eb; font-weight: 600; }
+        .cert-actions { max-width: 297mm; margin: 20px auto; display: flex; gap: 15px; flex-wrap: wrap; }
+        @media (max-width: 600px) {
+            .certificate { aspect-ratio: auto; gap: 14px; }
+            .cert-footer { grid-template-columns: 1fr; gap: 16px; justify-items: center; }
+            .cert-col { width: 100%; }
+        }
+        .auth-toggle { text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--gray); }
+        .auth-toggle a { color: var(--primary); cursor: pointer; font-weight: 600; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; color: var(--primary); font-weight: bold; }
+        
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background-color: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4); z-index: 9999; transition: transform 0.3s ease, box-shadow 0.3s ease; text-decoration: none; }
+        .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 6px 16px rgba(37, 211, 102, 0.6); }
+        .whatsapp-float svg { width: 32px; height: 32px; fill: white; }
+        .whatsapp-float::before { content: "Chat with us on WhatsApp!"; position: absolute; right: 75px; background: #1e293b; color: white; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; transform: translateX(10px); }
+        .whatsapp-float:hover::before { opacity: 1; transform: translateX(0); }
+        @media (max-width: 768px) { .whatsapp-float { bottom: 20px; right: 20px; width: 55px; height: 55px; } .whatsapp-float svg { width: 28px; height: 28px; } .whatsapp-float::before { display: none; } }
+        @media print {
+            @page { size: A4 landscape; margin: 0; }
+            html, body { background: #ffffff; }
+            header, .whatsapp-float, .loading-overlay, .cert-actions { display: none !important; }
+            .container { max-width: none; padding: 0; }
+            .lms-view { padding: 0; animation: none; }
+            .certificate-container { max-width: none; width: 297mm; margin: 0; }
+            .certificate { height: 209mm; aspect-ratio: auto; box-shadow: none; page-break-inside: avoid; break-inside: avoid; }
+            .btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading-overlay" class="loading-overlay">Loading ABN Academy...</div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo-container">
+                    <img src="favicon.svg" alt="ABN Logo" class="logo-img">
+                    <span class="logo-text">ABN Academy</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="view-login" class="lms-view active">
+            <div class="lms-card" style="max-width: 400px; margin: 40px auto;">
+                <h2 style="text-align: center;" id="auth-title">Student Login</h2>
+                <p style="text-align: center; color: var(--gray); margin-bottom: 20px;">Access your Cyber Security classroom</p>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="student@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" onkeypress="if(event.key === 'Enter') handleAuth()">
+                </div>
+                <button class="btn" id="auth-btn" onclick="handleAuth()">Login to Classroom</button>
+                <div class="auth-toggle">
+                    <span id="auth-toggle-text">Don't have an account?</span> 
+                    <a onclick="toggleAuthMode()" id="auth-toggle-link">Register here</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-enrollment" class="lms-view">
+            <div class="lms-card">
+                <h2>Introduction to Cyber Security Academy</h2>
+                <p>Welcome! Review your enrollment details below.</p>
+                <div class="price-tag">₦5,000 <span style="font-size: 1rem; color: var(--gray); font-weight: normal;">(One-time payment)</span></div>
+                <h3 style="margin-top: 30px;">📚 60-Day Curriculum Overview:</h3>
+                <ul class="syllabus-list">
+                    <li>Days 1-15: Network Security Fundamentals</li>
+                    <li>Days 16-30: Vulnerability Assessment & Testing</li>
+                    <li>Days 31-45: Secure Coding Practices</li>
+                    <li>Days 46-60: Ethical Hacking Basics & Defense</li>
+                    <li>Day 60: Final Certification Exam & Issuing of Certificate</li>
+                </ul>
+                <button class="btn btn-success" onclick="initiatePayment()">💳 Pay Securely with Paystack</button>
+                <p style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--gray);">Already paid with this email? <a onclick="recheckPayment()" style="color: var(--primary); cursor: pointer; font-weight: 600;">Click here to check your payment</a></p>
+                <button class="btn btn-outline" style="width: auto; margin: 15px auto 0; display: block; font-size: 0.9rem;" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div id="view-schedule" class="lms-view">
+            <div class="lms-card">
+                <h2>🎉 Payment Successful!</h2>
+                <p>Let's customize your 60-day learning schedule.</p>
+                <div class="form-group" style="margin-top: 30px;">
+                    <label>How many hours can you dedicate each day?</label>
+                    <select id="study-hours" class="form-control" onchange="calculateSchedule()">
+                        <option value="1">1 Hour / day</option>
+                        <option value="2" selected>2 Hours / day</option>
+                        <option value="3">3 Hours / day</option>
+                        <option value="4">4+ Hours / day</option>
+                    </select>
+                </div>
+                <div id="schedule-result" style="background: var(--bg-color); padding: 20px; border-radius: 8px; margin-top: 20px; display: none;">
+                    <p><strong>Total Duration:</strong> 60 Days</p>
+                    <p><strong>Daily Commitment:</strong> <span id="display-hours">2</span> hours</p>
+                    <p><strong>Completion Date:</strong> <span id="completion-date" style="color: var(--primary); font-weight: bold;"></span></p>
+                </div>
+                <button class="btn" id="start-class-btn" style="display: none;" onclick="startClass()">🚀 Enter Classroom</button>
+            </div>
+        </div>
+
+        <div id="view-dashboard" class="lms-view">
+            <div class="lms-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h2>Classroom Dashboard</h2>
+                        <p style="color: var(--gray); margin-top: 5px;">Welcome back, <span id="user-name-display" style="color: var(--primary); font-weight: 600;">Student</span>! 👋</p>
+                    </div>
+                    <button class="btn" style="width: auto; background: var(--gray); font-size: 0.9rem;" onclick="logout()">Logout</button>
+                </div>
+                <div style="margin: 20px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Course Progress</span>
+                        <span id="progress-text">Day 1 of 60</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+
+                <div id="daily-content">
+                    <div class="teacher-note">
+                        <h4>👨‍🏫 Instructor's Note for Day <span id="teacher-note-day">1</span></h4>
+                        <p style="font-weight: bold; color: var(--primary); margin-bottom: 5px;">Topic: <span id="topic-of-the-day">Network Security Fundamentals</span></p>
+                        <p id="teacher-note-text"></p>
+                    </div>
+                    <div class="external-link-box">
+                        <h3>📖 Launch External Classroom</h3>
+                        <p>Open today's curated cybersecurity lesson.</p>
+                        <a id="external-lesson-link" href="#" target="_blank" class="btn btn-success" style="max-width: 300px; display: inline-block; margin-top: 0;">Open Today's Lesson ↗</a>
+                    </div>
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <p style="color: #166534; font-weight: 600;">✅ Pass both objective questions AND the practical documentation/coding challenge to unlock tomorrow's module.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+                        <button class="btn" style="flex: 1;" onclick="showView('view-quiz')">📝 Step 1: Take Daily Theory Quiz</button>
+                        <button class="btn btn-outline" style="flex: 1; margin-top: 0; border-color: var(--whatsapp); color: var(--whatsapp);" onclick="showView('view-chat')">💬 Discuss with Students</button>
+                    </div>
+                </div>
+
+                <div id="completed-content" style="display: none; text-align: center; padding: 40px;">
+                    <h2 style="color: var(--success);">🎉 Day 60 Completed!</h2>
+                    <p>You have finished all learning modules. Time for your final certification exam.</p>
+                    <button class="btn" onclick="showView('view-final-exam')">Start Final Exam</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-quiz" class="lms-view">
+            <div class="lms-card">
+                <h2>Daily Theory Assessment: Day <span id="quiz-day">1</span></h2>
+                <p style="color: var(--gray); margin-bottom: 20px;">Answer both objective questions correctly to proceed.</p>
+                <form id="quiz-form" onsubmit="return submitQuiz(event)">
+                    <div class="form-group">
+                        <label id="q1-label">Question 1</label>
+                        <div id="q1-options"></div>
+                    </div>
+                    <div class="form-group">
+                        <label id="q2-label">Question 2</label>
+                        <div id="q2-options"></div>
+                    </div>
+                    <button type="submit" class="btn">Submit Quiz</button>
+                    <button type="button" class="btn btn-outline" style="margin-top: 10px;" onclick="showView('view-dashboard')">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="view-practical" class="lms-view">
+            <div class="lms-card">
+                <h2>💻 Practical Challenge: Day <span id="practical-day">1</span></h2>
+                <p style="color: var(--gray); margin-bottom: 20px;">Write your security policy, configuration snippet, or script in the editor on the left.</p>
+                <div class="task-instruction" id="practical-instruction"></div>
+                <div class="code-editor-wrapper">
+                    <div class="editor-pane">
+                        <div class="pane-header">
+                            <span><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span> security-task.txt / script.sh</span>
+                            <span style="font-size: 0.8rem;">Documentation / Code</span>
+                        </div>
+                        <textarea id="code-input" class="code-textarea" placeholder="# Write your response, commands, or code here..." oninput="updatePreview()"></textarea>
+                    </div>
+                    <div class="preview-pane">
+                        <div class="pane-header" style="background: #f1f5f9; color: #475569;">
+                            <span>👁️ Live Preview</span>
+                            <span style="font-size: 0.8rem;">Output</span>
+                        </div>
+                        <iframe id="preview-frame" class="preview-frame" sandbox=""></iframe>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-success" style="flex: 1; min-width: 200px;" onclick="submitPracticalCode()">✅ Submit & Validate</button>
+                    <button class="btn btn-outline" style="flex: 1; min-width: 200px;" onclick="showView('view-dashboard')">Back to Dashboard</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-final-exam" class="lms-view">
+            <div class="lms-card">
+                <h2>🏆 Final Certification Exam</h2>
+                <p style="margin-bottom: 15px;">Build <strong>one complete security documentation or script</strong> that combines everything from all 60 days: Network Security, Vulnerability Assessment, Secure Coding, and Ethical Hacking. Your submission is checked for every concept, command, and best practice listed below. Pass them all to receive your certificate.</p>
+                <div class="task-instruction">
+                    <strong>How to structure your answer:</strong>
+                    <ul style="margin: 8px 0 0 22px;">
+                        <li>Write your explanations, policies, secure code snippets, and terminal commands in the editor.</li>
+                        <li>Use clear headings for each domain (Network, Vulnerability, Secure Coding, Hacking).</li>
+                        <li>Anything written only inside a comment does not count unless specifically required.</li>
+                    </ul>
+                </div>
+                <details open style="margin: 15px 0;">
+                    <summary style="cursor: pointer; font-weight: 600; color: var(--primary);">📋 Required elements (<span id="final-req-count">0</span>)</summary>
+                    <div id="final-requirements"></div>
+                </details>
+                <div class="code-editor-wrapper">
+                    <div class="editor-pane">
+                        <div class="pane-header">
+                            <span><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span> final-security-report.md / script.sh</span>
+                            <span style="font-size: 0.8rem;">Comprehensive Submission</span>
+                        </div>
+                        <textarea id="final-code-input" class="code-textarea" style="min-height: 500px;" placeholder="# Write your complete security submission here..." oninput="updatePreview('final-code-input', 'final-preview-frame')"></textarea>
+                    </div>
+                    <div class="preview-pane">
+                        <div class="pane-header" style="background: #f1f5f9; color: #475569;">
+                            <span>👁️ Live Preview</span>
+                            <span style="font-size: 0.8rem;">Output</span>
+                        </div>
+                        <iframe id="final-preview-frame" class="preview-frame" sandbox="" style="min-height: 500px;"></iframe>
+                    </div>
+                </div>
+                <div id="final-result"></div>
+                <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-success" style="flex: 1; min-width: 200px;" onclick="generateCertificate()">✅ Submit & Generate Certificate</button>
+                    <button class="btn btn-outline" style="flex: 1; min-width: 200px;" onclick="showView('view-dashboard')">Back to Dashboard</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-certificate" class="lms-view">
+            <div class="certificate-container">
+                <div class="certificate" id="certificate-node">
+                    <span class="cert-corner tl"></span><span class="cert-corner tr"></span>
+                    <span class="cert-corner bl"></span><span class="cert-corner br"></span>
+                    <img src="favicon.svg" alt="" class="cert-watermark">
+
+                    <div class="cert-head">
+                        <img src="favicon.svg" alt="ABN Academy logo" class="certificate-logo">
+                        <div class="cert-org">ABN Technologies Academy</div>
+                        <h1>Certificate of Completion</h1>
+                        <div class="cert-divider">◆</div>
+                    </div>
+
+                    <div class="cert-body">
+                        <p class="certify-text">This is to certify that</p>
+                        <div class="student-name" id="cert-name">Student Name</div>
+                        <p class="certify-text">has successfully completed the 60-day intensive training program and passed the final examination for</p>
+                        <h3>Introduction to Cyber Security</h3>
+                    </div>
+
+                    <div class="cert-footer">
+                        <div class="cert-col">
+                            <div class="cert-above-line" id="cert-date"></div>
+                            <div class="cert-line"><div class="cert-cap">Date Awarded</div></div>
+                        </div>
+
+                        <div class="cert-col cert-qr">
+                            <div id="qrcode"></div>
+                            <div class="cert-cap">Scan to verify</div>
+                            <div class="cert-cap cert-id" id="cert-id"></div>
+                        </div>
+
+                        <div class="cert-col">
+                            <div class="cert-above-line">
+                                <svg class="cert-signature" viewBox="0 0 220 70" role="img" aria-label="ABN Academy signature">
+                                    <text x="15" y="42" textLength="190" lengthAdjust="spacingAndGlyphs" font-family="'Segoe Script','Brush Script MT','Snell Roundhand','Lucida Handwriting','Apple Chancery',cursive" font-size="34" font-style="italic" fill="#1e3a8a">ABN Academy</text>
+                                    <path d="M14 55 C 70 65, 140 45, 206 53" stroke="#1e3a8a" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="cert-line"><div class="cert-cap"><strong>ABN Academy</strong>Authorized Signature</div></div>
+                        </div>
+                    </div>
+
+                    <div class="cert-bottom">Verify this certificate at <span>abnwebtech.online/verify</span></div>
+                </div>
+            </div>
+            <div class="cert-actions">
+                <button class="btn" style="flex: 1; min-width: 200px;" onclick="window.print()">🖨️ Print / Save as PDF</button>
+                <button class="btn btn-outline" style="flex: 1; min-width: 200px;" onclick="showView('view-dashboard')">Back to Dashboard</button>
+            </div>
+        </div>
+
+        <!-- STUDENT GROUP CHAT VIEW -->
+        <div id="view-chat" class="lms-view">
+            <div class="lms-card" style="height: 70vh; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2>💬 Student Community Chat</h2>
+                    <button class="btn btn-outline" style="width: auto; margin-top:0;" onclick="showView('view-dashboard')">Back to Dashboard</button>
+                </div>
+                <div id="chat-messages" style="flex: 1; overflow-y: auto; background: var(--bg-color); border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-color);">
+                    <p style="text-align: center; color: var(--gray);">Loading messages...</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="chat-input" class="form-control" placeholder="Type your message here..." style="flex: 1; margin-top: 0;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                    <button class="btn" style="width: auto; margin-top: 0;" onclick="sendChatMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ======================================================================
+        // ⚠️ IMPORTANT: NEW FIREBASE CONFIGURATION FOR CYBER SECURITY
+        // To completely separate this from "Master Web Development", you MUST 
+        // create a NEW Firebase project in the Firebase Console and paste its 
+        // credentials below. This guarantees separate logins, separate databases, 
+        // and zero progress overlap between the two courses.
+        // ======================================================================
+        const cyberFirebaseConfig = {
+            apiKey: "AIzaSyCJSYKcKfpL-h9P1jZxQPck9q-ly1RgERQ",
+            authDomain: "abn-cybersecurity-academy.firebaseapp.com",
+            projectId: "abn-cybersecurity-academy",
+            storageBucket: "abn-cybersecurity-academy.firebasestorage.app",
+            messagingSenderId: "238976309798",
+            appId: "1:238976309798:web:104636cf586a1e36ffe4e7"
+        };
+
+        // Initialize a named Firebase app instance to avoid conflicts 
+        // if this file is ever loaded alongside the Web Dev file.
+        const cyberApp = firebase.initializeApp(cyberFirebaseConfig, "cyber-academy-app");
+        const cyberAuth = cyberApp.auth();
+        const cyberDb = cyberApp.firestore();
+
+        cyberAuth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+          .then(() => console.log("✅ Cyber Security Session persistence set."))
+          .catch((error) => console.error("Error setting persistence:", error));
+
+        let currentUserData = null;
+        let isLoginMode = true;
+        let chatUnsubscribe = null;
+        const curriculum = {};
+        
+        const networkTopics = ["Introduction to Cybersecurity & CIA Triad", "Network Protocols (TCP/IP, UDP, HTTP, HTTPS)", "OSI Model and Security", "Firewalls and Packet Filtering", "Intrusion Detection and Prevention Systems (IDS/IPS)", "VPNs and Secure Remote Access", "Wireless Network Security (WPA2/WPA3)", "DNS Security and DNSSEC", "Network Segmentation and VLANs", "Secure Network Architecture (DMZ, Zero Trust)", "Port Scanning and Network Mapping", "Man-in-the-Middle (MitM) Attacks", "Denial of Service (DoS) and DDoS Mitigation", "Network Monitoring and Log Analysis", "Network Security Policies and Compliance"];
+        const vulnTopics = ["Introduction to Vulnerability Assessment", "Common Vulnerabilities and Exposures (CVE)", "Vulnerability Scanning Tools (Nmap, Nessus, OpenVAS)", "Web Application Vulnerabilities (OWASP Top 10)", "SQL Injection (SQLi) Fundamentals", "Cross-Site Scripting (XSS) Fundamentals", "Cross-Site Request Forgery (CSRF)", "Insecure Direct Object References (IDOR)", "Security Misconfigurations", "Sensitive Data Exposure", "Broken Authentication and Session Management", "Penetration Testing Methodologies (PTES)", "Risk Assessment and Management", "Vulnerability Reporting and Remediation", "Continuous Vulnerability Management"];
+        const secureTopics = ["Introduction to Secure Coding", "Input Validation and Sanitization", "Output Encoding to Prevent XSS", "Parameterized Queries and Prepared Statements", "Secure Password Storage (Hashing, Salting, bcrypt)", "Authentication Best Practices (MFA, OAuth, JWT)", "Authorization and Access Control (RBAC, ABAC)", "Secure Session Management", "Cryptography Basics (Symmetric vs Asymmetric)", "Secure API Design and Rate Limiting", "Error Handling and Logging securely", "Dependency Management and Supply Chain Security", "Secure CI/CD Pipelines (DevSecOps)", "Code Review and Static Application Security Testing (SAST)", "Dynamic Application Security Testing (DAST)"];
+        const hackingTopics = ["Introduction to Ethical Hacking", "Legal and Ethical Considerations (Rules of Engagement)", "Reconnaissance and OSINT (Open Source Intelligence)", "Social Engineering and Phishing", "Password Cracking Techniques and Tools", "Privilege Escalation (Linux and Windows)", "Post-Exploitation and Persistence", "Web Application Exploitation (Burp Suite basics)", "Wireless Hacking Concepts", "Mobile Application Security Testing", "Incident Response and Forensics Basics", "Malware Analysis Fundamentals", "Threat Intelligence and Hunting", "Security Operations Center (SOC) Basics", "Final Certification Exam Preparation"];
+
+        const networkLinks = ["https://owasp.org/www-project-top-ten/", "https://www.cloudflare.com/learning/network-layer/what-is-tcp-ip/", "https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/", "https://www.cloudflare.com/learning/security/what-is-a-firewall/", "https://www.cisco.com/c/en/us/products/security/ids-ips.html", "https://www.cloudflare.com/learning/security/what-is-a-vpn/", "https://www.wifi.org/security", "https://www.cloudflare.com/learning/dns/dnssec/", "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst2960/software/release/12-2_55_se/configuration/guide/scg_2960/swvlan.html", "https://www.crowdstrike.com/cybersecurity-101/zero-trust-security/", "https://nmap.org/book/man.html", "https://www.cloudflare.com/learning/security/threats/man-in-the-middle-attack/", "https://www.cloudflare.com/learning/ddos/what-is-a-ddos-attack/", "https://www.splunk.com/en_us/blog/learn/network-monitoring.html", "https://www.nist.gov/cyberframework"];
+        const vulnLinks = ["https://www.cve.org/About/Overview", "https://www.tenable.com/products/nessus", "https://owasp.org/www-project-top-ten/", "https://owasp.org/www-community/attacks/SQL_Injection", "https://owasp.org/www-community/attacks/xss/", "https://owasp.org/www-community/attacks/csrf", "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/05-Authorization_Testing/04-Testing_for_Insecure_Direct_Object_References", "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/", "https://owasp.org/www-project-top-ten/OWASP_Top_Ten_2021/Top_10-2021_A2-Cryptographic_Failures/", "https://owasp.org/www-project-top-ten/OWASP_Top_Ten_2021/Top_10-2021_A7-Identification_and_Authentication_Failures/", "https://www.pentest-standard.org/index.php/Main_Page", "https://www.isaca.org/resources/news-and-trends/industry-news/2023/risk-assessment-methodologies", "https://www.cisa.gov/news-events/cybersecurity-advisories", "https://www.first.org/cvss/", "https://www.sans.org/blog/vulnerability-management/"];
+        const secureLinks = ["https://owasp.org/www-project-proactive-controls/", "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html", "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html", "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html", "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html", "https://cheatsheetseries.owasp.org/cheatsheets/Multifactor_Authentication_Cheat_Sheet.html", "https://cheatsheetseries.owasp.org/cheatsheets/Access_Control_Cheat_Sheet.html", "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html", "https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html", "https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html", "https://cheatsheetseries.owasp.org/cheatsheets/Error_Handling_Cheat_Sheet.html", "https://owasp.org/www-project-dependency-check/", "https://owasp.org/www-project-devsecops-guideline/", "https://owasp.org/www-community/controls/Static_Code_Analysis", "https://owasp.org/www-community/Vulnerability_Scanning_Tools"];
+        const hackingLinks = ["https://www.ec-council.org/ethical-hacking/", "https://www.pentest-standard.org/index.php/Pre-engagement", "https://www.osintframework.com/", "https://www.phishing.org/what-is-phishing", "https://www.kali.org/tools/john/", "https://www.hackingarticles.in/linux-privilege-escalation-using-suid-binaries/", "https://www.attackiq.com/2020/09/02/mitre-attck-persistence/", "https://portswigger.net/burp", "https://www.aircrack-ng.org/", "https://owasp.org/www-project-mobile-security-testing-guide/", "https://www.sans.org/posters/incident-response-steps/", "https://www.malwarebytes.com/malware-analysis", "https://www.mitre.org/capabilities/cybersecurity/threat-intelligence", "https://www.sans.org/soc/", "https://www.offsec.com/"];
+
+        const bank = {
+          network: {
+            a: [
+              ["What does the 'C' in the CIA triad stand for?", "Confidentiality", "Connectivity", "Control"],
+              ["Which protocol is connection-oriented and reliable?", "TCP", "UDP", "ICMP"],
+              ["Which layer of the OSI model handles routing?", "Network", "Data Link", "Transport"],
+              ["What is the primary function of a firewall?", "Filter network traffic", "Speed up internet", "Store passwords"],
+              ["What does IDS stand for?", "Intrusion Detection System", "Internet Data Service", "Internal Domain Server"],
+              ["Which protocol encrypts remote access sessions?", "SSH", "Telnet", "FTP"],
+              ["What is the most secure Wi-Fi encryption standard listed?", "WPA3", "WEP", "WPA"],
+              ["What does DNSSEC add to DNS?", "Cryptographic authentication", "Faster resolution", "More IP addresses"],
+              ["What is a VLAN used for?", "Network segmentation", "Increasing bandwidth", "Wireless access"],
+              ["What is a DMZ in network security?", "A perimeter network", "A type of malware", "A database"],
+              ["Which tool is commonly used for port scanning?", "Nmap", "Wireshark", "Metasploit"],
+              ["What is a Man-in-the-Middle (MitM) attack?", "Intercepting communication", "Flooding a server", "Guessing passwords"],
+              ["What does DDoS stand for?", "Distributed Denial of Service", "Direct Data over Socket", "Domain Denial System"],
+              ["Which protocol is used for secure network monitoring logs?", "Syslog over TLS", "HTTP", "SNMP v1"],
+              ["What framework provides guidelines for improving cybersecurity?", "NIST CSF", "HTML5", "CSS3"]
+            ],
+            b: [
+              ["What does the 'I' in the CIA triad stand for?", "Integrity", "Intelligence", "Interface"],
+              ["Which protocol is connectionless and faster?", "UDP", "TCP", "HTTP"],
+              ["Which layer of the OSI model handles MAC addresses?", "Data Link", "Network", "Session"],
+              ["What is a stateful firewall?", "Tracks active connections", "Only filters by IP", "Does not inspect packets"],
+              ["What does IPS stand for?", "Intrusion Prevention System", "Internet Protocol Security", "Internal Port Scanner"],
+              ["Which protocol is unencrypted and should be avoided?", "Telnet", "SSH", "HTTPS"],
+              ["What is the main weakness of WEP?", "Weak encryption keys", "Slow speed", "High cost"],
+              ["What is the purpose of a reverse proxy?", "Protect internal servers", "Scan for viruses", "Assign IP addresses"],
+              ["What is the Zero Trust security model?", "Never trust, always verify", "Trust internal networks", "Use only passwords"],
+              ["What is network segmentation?", "Dividing a network into smaller parts", "Combining all networks", "Increasing cable length"],
+              ["What does the '-sS' flag do in Nmap?", "SYN stealth scan", "Service version detection", "OS detection"],
+              ["Which attack floods a target with traffic?", "DoS", "Phishing", "SQL Injection"],
+              ["What is a common DDoS mitigation technique?", "Traffic filtering and rate limiting", "Turning off the server", "Changing the domain name"],
+              ["What is SIEM used for?", "Security Information and Event Management", "Simple Internet Email Mode", "System Internal Error Monitor"],
+              ["What does GDPR primarily protect?", "User data privacy", "Network speed", "Software copyrights"]
+            ]
+          },
+          vuln: {
+            a: [
+              ["What does CVE stand for?", "Common Vulnerabilities and Exposures", "Critical Virus Engine", "Cyber Vulnerability Evaluation"],
+              ["Which tool is a popular vulnerability scanner?", "Nessus", "Photoshop", "Excel"],
+              ["What is the #1 risk in the OWASP Top 10?", "Broken Access Control", "Slow loading", "Poor design"],
+              ["What does SQLi stand for?", "SQL Injection", "Secure Query Language", "System Query Interface"],
+              ["What is the primary cause of XSS?", "Unsanitized user input", "Strong passwords", "Firewalls"],
+              ["What does CSRF stand for?", "Cross-Site Request Forgery", "Cross-Server Resource File", "Critical System Risk Factor"],
+              ["What is IDOR?", "Insecure Direct Object Reference", "Internal Domain Object Routing", "Internet Data Output Request"],
+              ["What is a security misconfiguration?", "Insecure default settings", "Using strong encryption", "Regular patching"],
+              ["What is sensitive data exposure?", "Unencrypted confidential information", "Public website content", "Open source code"],
+              ["What causes broken authentication?", "Weak session management", "Using HTTPS", "Input validation"],
+              ["What does PTES stand for?", "Penetration Testing Execution Standard", "Public Test Environment System", "Private Threat Evaluation Service"],
+              ["What is the first step in risk assessment?", "Asset identification", "Buying software", "Hiring hackers"],
+              ["What should a vulnerability report include?", "Steps to reproduce", "Personal opinions", "Marketing data"],
+              ["What is continuous vulnerability management?", "Ongoing scanning and patching", "One-time scan", "Ignoring old vulnerabilities"],
+              ["What is a false positive in scanning?", "Flagging a non-issue as a vulnerability", "Missing a real vulnerability", "A successful exploit"]
+            ],
+            b: [
+              ["What does CVSS measure?", "Vulnerability severity", "Network speed", "Code length"],
+              ["Which tool is an open-source vulnerability scanner?", "OpenVAS", "Microsoft Word", "Chrome"],
+              ["What does A01:2021 refer to in OWASP?", "Broken Access Control", "Injection", "Cryptographic Failures"],
+              ["How can SQL injection be prevented?", "Parameterized queries", "Using GET requests", "Disabling the database"],
+              ["What is reflected XSS?", "Malicious script is reflected off the web server", "Stored in the database", "Only affects the server"],
+              ["How can CSRF be mitigated?", "Anti-CSRF tokens", "Using HTTP instead of HTTPS", "Removing all forms"],
+              ["How do you prevent IDOR?", "Implementing proper authorization checks", "Hiding URLs", "Using longer IDs"],
+              ["What is directory traversal?", "Accessing files outside the intended directory", "Browsing a website", "Scanning ports"],
+              ["What is PII?", "Personally Identifiable Information", "Private Internet Interface", "Public IP Information"],
+              ["What is a good password storage method?", "Hashing with salt", "Plain text", "Base64 encoding"],
+              ["What is black-box penetration testing?", "Testing with no prior knowledge of the system", "Testing with full source code", "Testing only the network"],
+              ["What is risk appetite?", "The amount of risk an organization is willing to accept", "The cost of software", "The number of employees"],
+              ["What is remediation?", "Fixing or mitigating a vulnerability", "Reporting a bug", "Scanning the network"],
+              ["What is patch management?", "Applying updates to fix vulnerabilities", "Writing new code", "Deleting old files"],
+              ["What is a false negative in scanning?", "Failing to detect a real vulnerability", "Detecting a non-issue", "A slow scan"]
+            ]
+          },
+          secure: {
+            a: [
+              ["What is the goal of secure coding?", "Prevent vulnerabilities", "Write code faster", "Use more memory"],
+              ["What is input validation?", "Checking data before processing", "Displaying data", "Deleting data"],
+              ["How do you prevent XSS?", "Output encoding", "Using bold text", "Increasing font size"],
+              ["What is a prepared statement?", "A pre-compiled SQL query", "A printed document", "A network packet"],
+              ["What is the purpose of salting passwords?", "Defend against rainbow table attacks", "Make passwords longer", "Speed up login"],
+              ["What does MFA stand for?", "Multi-Factor Authentication", "Main Frame Access", "Multiple File Allocation"],
+              ["What is RBAC?", "Role-Based Access Control", "Random Binary Access Code", "Remote Basic Authentication Check"],
+              ["What is a secure session ID characteristic?", "Long, random, and unpredictable", "Short and sequential", "Based on username"],
+              ["What is symmetric encryption?", "Same key for encryption and decryption", "Different keys for each", "No keys used"],
+              ["What is API rate limiting?", "Restricting the number of requests", "Speeding up the API", "Deleting the API"],
+              ["How should errors be handled securely?", "Generic messages to users, detailed logs internally", "Showing stack traces to users", "Ignoring errors"],
+              ["What is supply chain security?", "Securing third-party dependencies", "Shipping physical goods", "Managing employees"],
+              ["What does SAST stand for?", "Static Application Security Testing", "System Access Security Tool", "Secure Automated Software Testing"],
+              ["What does DAST stand for?", "Dynamic Application Security Testing", "Direct Application System Test", "Data Analysis Security Tool"],
+              ["What is DevSecOps?", "Integrating security into the DevOps pipeline", "A new programming language", "A type of firewall"]
+            ],
+            b: [
+              ["What is the principle of least privilege?", "Granting minimum necessary access", "Giving everyone admin rights", "Denying all access"],
+              ["What is sanitization?", "Cleaning input to make it safe", "Deleting the database", "Formatting the hard drive"],
+              ["What is Context-Aware Output Encoding?", "Encoding based on where the data is placed", "Using only uppercase", "Removing all spaces"],
+              ["What is an ORM?", "Object-Relational Mapping", "Object Random Memory", "Online Resource Manager"],
+              ["Which algorithm is recommended for password hashing?", "bcrypt", "MD5", "Base64"],
+              ["What is an example of a second factor in MFA?", "SMS code or authenticator app", "Password", "Username"],
+              ["What is ABAC?", "Attribute-Based Access Control", "Always Block All Connections", "Automated Basic Access Check"],
+              ["What is the HttpOnly cookie flag for?", "Preventing JavaScript access to the cookie", "Making the cookie last longer", "Encrypting the cookie"],
+              ["What is asymmetric encryption?", "Uses a public and private key pair", "Uses a single shared key", "Uses no keys"],
+              ["What is an API gateway?", "A server that manages and secures API requests", "A database", "A firewall"],
+              ["Why avoid logging sensitive data?", "To prevent data exposure in log files", "To save disk space", "To make logs readable"],
+              ["What is Software Composition Analysis (SCA)?", "Identifying vulnerabilities in open-source components", "Writing code", "Compiling code"],
+              ["When is SAST typically performed?", "During development on source code", "After deployment", "During a network scan"],
+              ["When is DAST typically performed?", "On a running application", "On source code", "On a database schema"],
+              ["What is a security champion?", "A developer trained to promote security practices", "A hacker", "A firewall appliance"]
+            ]
+          },
+          hacking: {
+            a: [
+              ["What is the primary goal of ethical hacking?", "Identify and fix vulnerabilities", "Steal data", "Crash servers"],
+              ["What is a Rules of Engagement (RoE) document?", "Defines the scope and limits of a penetration test", "A list of passwords", "A network diagram"],
+              ["What is OSINT?", "Open Source Intelligence", "Operating System Internal Network", "Open Secure Internet Technology"],
+              ["What is phishing?", "Fraudulent attempts to obtain sensitive information", "Fishing for data", "Scanning ports"],
+              ["What is a dictionary attack?", "Trying words from a list to guess a password", "Translating code", "Searching a database"],
+              ["What is privilege escalation?", "Gaining higher access rights than authorized", "Deleting files", "Slowing down the network"],
+              ["What is a rootkit?", "Malware designed to hide its presence and grant privileged access", "A network router", "A security patch"],
+              ["What is Burp Suite primarily used for?", "Web application security testing", "Email marketing", "Graphic design"],
+              ["What is a rogue access point?", "An unauthorized wireless access point", "A secure corporate Wi-Fi", "A wired network switch"],
+              ["What is reverse engineering in mobile security?", "Analyzing an app to understand its logic and find flaws", "Building an app from scratch", "Installing an app"],
+              ["What is the first step in incident response?", "Preparation", "Eradication", "Recovery"],
+              ["What is static malware analysis?", "Analyzing code without executing it", "Running the malware in a sandbox", "Deleting the malware"],
+              ["What is threat hunting?", "Proactively searching for hidden threats", "Waiting for an alert", "Installing antivirus"],
+              ["What is a SOC?", "Security Operations Center", "System Over Clock", "Secure Online Connection"],
+              ["What is the final phase of a penetration test?", "Reporting", "Exploitation", "Scanning"]
+            ],
+            b: [
+              ["What is a white-box penetration test?", "Testing with full knowledge of the system", "Testing with no knowledge", "Testing only the exterior"],
+              ["What is a NDA in ethical hacking?", "Non-Disclosure Agreement", "Network Data Analyzer", "New Domain Assignment"],
+              ["What is Shodan?", "A search engine for Internet-connected devices", "A programming language", "A firewall"],
+              ["What is spear phishing?", "A targeted phishing attack", "A mass email campaign", "A network protocol"],
+              ["What is a brute-force attack?", "Trying all possible password combinations", "Guessing based on hints", "Stealing a password"],
+              ["What is a common Linux privilege escalation vector?", "Misconfigured SUID binaries", "Strong passwords", "Updated kernels"],
+              ["What is a backdoor?", "A hidden method to bypass normal authentication", "A secure entrance", "A firewall rule"],
+              ["What is a proxy in web hacking?", "An intermediary for requests, often used to intercept traffic", "A web server", "A database"],
+              ["What is WPA2 cracking often dependent on?", "Capturing the 4-way handshake", "Guessing the SSID", "Physical access to the router"],
+              ["What is OWASP MASVS?", "Mobile Application Security Verification Standard", "Mainframe Security Standard", "Network Security Protocol"],
+              ["What is containment in incident response?", "Limiting the spread of the incident", "Deleting all data", "Ignoring the issue"],
+              ["What is dynamic malware analysis?", "Executing malware in a controlled environment to observe behavior", "Reading the source code", "Hashing the file"],
+              ["What is an IoC?", "Indicator of Compromise", "Input/Output Controller", "Internet of Computers"],
+              ["What is a SIEM in a SOC?", "Security Information and Event Management", "Simple Internet Email Mode", "System Internal Error Monitor"],
+              ["What should a penetration test report include?", "Executive summary, technical details, and remediation steps", "Only the exploits used", "Personal opinions about the staff"]
+            ]
+          }
+        };
+
+        function mk(arr) {
+          return {
+            question: arr[0],
+            options: arr.slice(1).map((text, idx) => [text, idx === 0 ? "correct" : "wrong"])
+          };
+        }
+
+        const R = (label, re, raw) => ({ label, re, raw: !!raw });
+        const cmd = (name) => R(`Command or tool: ${name}`, new RegExp(`\\b${name}\\b`, "i"), true);
+
+        const REQ = {
+          network: [
+            [R("Mention of CIA Triad", /CIA\s+triad|Confidentiality.*Integrity.*Availability/i, true)],
+            [cmd("tcpdump"), R("Mention of TCP/IP", /TCP\/IP|Transmission Control Protocol/i, true)],
+            [R("Mention of OSI Model", /OSI\s+model|Physical|Data Link|Network|Transport|Session|Presentation|Application/i, true)],
+            [cmd("iptables"), R("Mention of firewall", /firewall|filter|drop|accept/i, true)],
+            [cmd("snort"), R("Mention of IDS/IPS", /intrusion detection|intrusion prevention|IDS|IPS/i, true)],
+            [cmd("openvpn"), R("Mention of VPN", /VPN|Virtual Private Network|tunnel/i, true)],
+            [R("Mention of WPA3 or WPA2", /WPA3|WPA2|Wi-Fi Protected Access/i, true)],
+            [cmd("dig"), R("Mention of DNSSEC", /DNSSEC|DNS Security Extensions/i, true)],
+            [R("Mention of VLAN", /VLAN|Virtual LAN|segmentation/i, true)],
+            [R("Mention of DMZ or Zero Trust", /DMZ|Demilitarized Zone|Zero Trust/i, true)],
+            [cmd("nmap"), R("Mention of port scanning", /port scan|nmap|reconnaissance/i, true)],
+            [R("Mention of MitM", /Man-in-the-Middle|MitM|ARP spoofing/i, true)],
+            [R("Mention of DDoS mitigation", /DDoS|Distributed Denial of Service|rate limiting/i, true)],
+            [cmd("grep"), R("Mention of log analysis", /log analysis|SIEM|monitoring/i, true)],
+            [R("Mention of compliance", /compliance|NIST|ISO 27001|policy/i, true)]
+          ],
+          vuln: [
+            [R("Mention of CVE format", /CVE-\d{4}-\d{4,}/i, true)],
+            [cmd("nessus"), R("Mention of vulnerability scanning", /vulnerability scan|scanner/i, true)],
+            [R("Mention of OWASP Top 10", /OWASP\s*Top\s*10/i, true)],
+            [R("Mention of SQL Injection", /SQL\s*injection|SQLi/i, true)],
+            [R("Mention of Cross-Site Scripting", /Cross-Site Scripting|XSS/i, true)],
+            [R("Mention of CSRF", /Cross-Site Request Forgery|CSRF/i, true)],
+            [R("Mention of IDOR", /Insecure Direct Object Reference|IDOR/i, true)],
+            [R("Mention of security misconfiguration", /misconfiguration|default password/i, true)],
+            [R("Mention of sensitive data exposure", /sensitive data|PII|encryption/i, true)],
+            [R("Mention of broken authentication", /broken authentication|session fixation/i, true)],
+            [R("Mention of PTES", /PTES|Penetration Testing Execution Standard/i, true)],
+            [R("Mention of risk assessment", /risk assessment|impact|likelihood/i, true)],
+            [R("Mention of remediation", /remediation|patch|mitigation/i, true)],
+            [R("Mention of vulnerability reporting", /vulnerability report|severity|CVSS/i, true)],
+            [R("Mention of continuous monitoring", /continuous monitoring|ongoing assessment/i, true)]
+          ],
+          secure: [
+            [R("Mention of input validation", /input validation|sanitize/i, true)],
+            [R("Mention of output encoding", /output encoding|escape/i, true)],
+            [R("Mention of parameterized queries", /parameterized query|prepared statement/i, true)],
+            [R("Mention of bcrypt or Argon2", /bcrypt|Argon2|scrypt|PBKDF2/i, true)],
+            [R("Mention of MFA or 2FA", /MFA|Two-Factor Authentication|2FA/i, true)],
+            [R("Mention of RBAC or ABAC", /RBAC|Role-Based Access Control|ABAC/i, true)],
+            [R("Mention of secure session management", /HttpOnly|Secure flag|session ID/i, true)],
+            [R("Mention of encryption", /symmetric|asymmetric|AES|RSA/i, true)],
+            [R("Mention of API rate limiting", /rate limiting|throttling/i, true)],
+            [R("Mention of secure error handling", /generic error message|no stack trace/i, true)],
+            [R("Mention of dependency checking", /dependency check|SCA|Software Composition Analysis/i, true)],
+            [R("Mention of DevSecOps", /DevSecOps|shift left/i, true)],
+            [R("Mention of SAST", /SAST|Static Application Security Testing/i, true)],
+            [R("Mention of DAST", /DAST|Dynamic Application Security Testing/i, true)],
+            [R("Mention of code review", /code review|peer review/i, true)]
+          ],
+          hacking: [
+            [R("Mention of ethical hacking", /ethical hacking|white hat|permission/i, true)],
+            [R("Mention of Rules of Engagement", /Rules of Engagement|RoE|scope/i, true)],
+            [cmd("theHarvester"), R("Mention of OSINT", /OSINT|Open Source Intelligence/i, true)],
+            [R("Mention of social engineering", /social engineering|phishing|spear phishing/i, true)],
+            [cmd("hashcat"), R("Mention of password cracking", /password cracking|brute force|dictionary attack/i, true)],
+            [R("Mention of privilege escalation", /privilege escalation|SUID|sudo/i, true)],
+            [R("Mention of persistence", /persistence|backdoor|cron job/i, true)],
+            [cmd("burp"), R("Mention of Burp Suite or proxy", /Burp Suite|proxy|intercept/i, true)],
+            [cmd("aircrack"), R("Mention of wireless hacking", /wireless hacking|WPA handshake/i, true)],
+            [R("Mention of mobile security", /mobile security|APK|MASVS/i, true)],
+            [R("Mention of incident response", /preparation|identification|containment|eradication|recovery/i, true)],
+            [R("Mention of malware analysis", /static analysis|dynamic analysis|sandbox/i, true)],
+            [R("Mention of threat intelligence", /threat intelligence|IoC|Indicator of Compromise/i, true)],
+            [R("Mention of SOC or SIEM", /SOC|Security Operations Center|SIEM/i, true)],
+            [R("Mention of reporting", /executive summary|remediation steps|penetration test report/i, true)]
+          ]
+        };
+
+        const catNames = { network: "Network Security", vuln: "Vulnerability Assessment", secure: "Secure Coding Practices", hacking: "Ethical Hacking" };
+        const finalGroups = { network: [], vuln: [], secure: [], hacking: [] };
+        const finalSeen = new Set();
+
+        function stripComments(code, cat) {
+            let c = code.replace(/<!-{2}[\s\S]*?-{2}>/g, "");
+            if (cat === "secure" || cat === "hacking" || cat === "final") {
+                c = c.replace(/\/\*[\s\S]*?\*\//g, "");
+                c = c.replace(/(^|[^:"'\\])\/\/.*$/gm, "$1");
+            }
+            return c;
+        }
+
+        function runChecks(checks, code, cat) {
+            const stripped = stripComments(code, cat);
+            return checks.filter(c => !c.re.test(c.raw ? code : stripped));
+        }
+
+        for (let i = 1; i <= 60; i++) {
+            let topic, note, link, task, cat, idx;
+            if (i <= 15) {
+                idx = i - 1; cat = "network";
+                topic = networkTopics[idx]; link = networkLinks[idx];
+                note = `Welcome to Day ${i}! Today's focus is on <strong>${topic}</strong>. This is a crucial building block for understanding how networks operate and how to secure them.`;
+                task = `<strong>Task:</strong> Write a brief explanation, configuration snippet, or policy demonstrating your understanding of <strong>${topic}</strong>.`;
+            } else if (i <= 30) {
+                idx = i - 16; cat = "vuln";
+                topic = vulnTopics[idx]; link = vulnLinks[idx];
+                note = `Great progress! Day ${i} is all about <strong>${topic}</strong>. Identifying weaknesses is the first step to securing any system.`;
+                task = `<strong>Task:</strong> Document or write a script/policy related to <strong>${topic}</strong>.`;
+            } else if (i <= 45) {
+                idx = i - 31; cat = "secure";
+                topic = secureTopics[idx]; link = secureLinks[idx];
+                note = `Welcome to the defense layer! Day ${i} covers <strong>${topic}</strong>. Secure coding prevents vulnerabilities from being introduced in the first place.`;
+                task = `<strong>Task:</strong> Write a secure code snippet, configuration, or guideline implementing <strong>${topic}</strong>.`;
+            } else {
+                idx = i - 46; cat = "hacking";
+                topic = hackingTopics[idx]; link = hackingLinks[idx];
+                note = `Final stretch! Day ${i} is about <strong>${topic}</strong>. Thinking like an attacker is the best way to build robust defenses.`;
+                task = `<strong>Task:</strong> Document the methodology, commands, or reporting steps for <strong>${topic}</strong>.`;
+            }
+
+            const checks = REQ[cat][idx];
+            checks.forEach(c => {
+                const key = (c.raw ? "r|" : "s|") + c.label;
+                if (!finalSeen.has(key)) { finalSeen.add(key); finalGroups[cat].push(c); }
+            });
+            task += `<br><br><strong>Your submission must include (content without these will not pass):</strong><ul style="margin: 8px 0 0 22px;">${checks.map(c => `<li>${escapeHtml(c.label)}</li>`).join('')}</ul>`;
+
+            curriculum[i] = {
+                topic, note, link, cat, checks,
+                practicalTask: task,
+                quiz: { q1: mk(bank[cat].a[idx]), q2: mk(bank[cat].b[idx]) }
+            };
+        }
+
+        function emailKey(email) {
+            return String(email || '').trim().toLowerCase();
+        }
+
+        function showOverlay(msg) {
+            const o = document.getElementById('loading-overlay');
+            o.textContent = msg;
+            o.style.display = 'flex';
+        }
+
+        function hideOverlay() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        cyberAuth.onAuthStateChanged(async (user) => {
+            if (user) {
+                console.log("✅ User is currently logged in as:", user.email);
+                showOverlay('Checking your account...');
+                await fetchUserData(user.uid);
+                hideOverlay();
+            } else {
+                currentUserData = null;
+                hideOverlay();
+                showView('view-login');
+            }
+        });
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').textContent = isLoginMode ? 'Student Login' : 'Create Account';
+            document.getElementById('auth-btn').textContent = isLoginMode ? 'Login to Classroom' : 'Register & Continue';
+            document.getElementById('auth-toggle-text').textContent = isLoginMode ? "Don't have an account?" : "Already have an account?";
+            document.getElementById('auth-toggle-link').textContent = isLoginMode ? 'Register here' : 'Login here';
+        }
+
+        async function handleAuth() {
+            const email = emailKey(document.getElementById('login-email').value);
+            const password = document.getElementById('login-password').value;
+            if (!email.includes('@') || password.length < 6) {
+                alert('Please enter a valid email and a password of at least 6 characters.');
+                return;
+            }
+            showOverlay(isLoginMode ? 'Logging in...' : 'Creating account...');
+            try {
+                if (isLoginMode) {
+                    await cyberAuth.signInWithEmailAndPassword(email, password);
+                } else {
+                    await cyberAuth.createUserWithEmailAndPassword(email, password);
+                }
+            } catch (error) {
+                hideOverlay();
+                alert('Authentication Error: ' + error.message);
+            }
+        }
+
+        async function fetchUserData(uid) {
+            try {
+                const user = cyberAuth.currentUser;
+                const email = emailKey(user.email);
+                const userRef = cyberDb.collection('users').doc(uid);
+
+                let snap = await userRef.get();
+                if (!snap.exists) {
+                    await userRef.set({
+                        email: email,
+                        name: email.split('@')[0].replace('.', ' '),
+                        hasPaid: false, hoursPerDay: 2, currentDay: 1, totalDays: 60, certId: null,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    snap = await userRef.get();
+                }
+
+                let data = snap.data();
+
+                if (!data.hasPaid) {
+                    try {
+                        const pay = await cyberDb.collection('payments').doc(email).get();
+                        if (pay.exists) {
+                            const ref = pay.data().reference || null;
+                            await userRef.set({ hasPaid: true, paymentRef: ref }, { merge: true });
+                            data = { ...data, hasPaid: true, paymentRef: ref };
+                            console.log('✅ Payment record found for', email, '- account unlocked.');
+                        }
+                    } catch (payErr) {
+                        console.warn('Payment lookup failed:', payErr);
+                    }
+                }
+
+                currentUserData = data;
+                updateUIBasedOnState();
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                alert('Error loading your data. Please check your internet connection and refresh.');
+            }
+        }
+
+        async function updateUserData(updates) {
+            if (!cyberAuth.currentUser) return false;
+            try {
+                await cyberDb.collection('users').doc(cyberAuth.currentUser.uid).set(updates, { merge: true });
+                currentUserData = { ...currentUserData, ...updates };
+                return true;
+            } catch (error) {
+                console.error("Error updating user data:", error);
+                alert('Error saving progress. Please check your internet connection.');
+                return false;
+            }
+        }
+
+        function updateUIBasedOnState() {
+            const nameDisplay = document.getElementById('user-name-display');
+            if (nameDisplay && currentUserData.name) {
+                const formattedName = currentUserData.name.charAt(0).toUpperCase() + currentUserData.name.slice(1);
+                nameDisplay.textContent = formattedName;
+            }
+            if (currentUserData.currentDay > 60 && currentUserData.certId) {
+                renderCertificate();
+                showView('view-certificate');
+            } else if (currentUserData.hasPaid) {
+                updateDashboard();
+                showView('view-dashboard');
+            } else {
+                showView('view-enrollment');
+            }
+        }
+
+        async function recheckPayment() {
+            if (!cyberAuth.currentUser) return;
+            showOverlay('Checking your payment...');
+            await fetchUserData(cyberAuth.currentUser.uid);
+            hideOverlay();
+            if (currentUserData && !currentUserData.hasPaid) {
+                alert('No payment was found for ' + emailKey(cyberAuth.currentUser.email) + '.\n\nIf you paid with a different email, log in with that email. Otherwise contact support on WhatsApp with your payment reference.');
+            }
+        }
+
+        async function logout() {
+            showOverlay('Logging out...');
+            if (chatUnsubscribe) { chatUnsubscribe(); chatUnsubscribe = null; }
+            await cyberAuth.signOut();
+            hideOverlay();
+        }
+
+        function showView(viewId) {
+            document.querySelectorAll('.lms-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            if(viewId === 'view-quiz') loadQuiz();
+            if(viewId === 'view-practical') loadPracticalChallenge();
+            if(viewId === 'view-chat') loadChat();
+            if(viewId === 'view-final-exam') loadFinalExam();
+            if(viewId !== 'view-chat' && chatUnsubscribe) { chatUnsubscribe(); chatUnsubscribe = null; }
+        }
+
+        function initiatePayment() {
+            if (!currentUserData || !cyberAuth.currentUser) { alert('Please log in first to proceed with payment.'); return; }
+            if (currentUserData.hasPaid) {
+                updateDashboard();
+                showView('view-dashboard');
+                return;
+            }
+            const email = emailKey(cyberAuth.currentUser.email);
+            try {
+                let handler = PaystackPop.setup({
+                    key: 'pk_live_e8b893fa426ea57e8090d77b75bc4430cd88c4b9', 
+                    email: email, amount: 5000 * 100, currency: 'NGN',
+                    ref: 'ABN_CYBER_' + Math.floor((Math.random() * 1000000000) + 1),
+                    callback: function(response) {
+                        recordPayment(email, response.reference);
+                    },
+                    onClose: function() { console.log('Payment window closed by user.'); }
+                });
+                handler.openIframe();
+            } catch (error) {
+                console.error("Paystack Initialization Error:", error);
+                alert("Could not load payment window.\n\nError: " + error.message);
+            }
+        }
+
+        async function recordPayment(email, reference) {
+            showOverlay('Saving your payment...');
+            const paidAt = new Date().toISOString();
+            let savedProfile = false, savedEmailRecord = false;
+
+            try {
+                await cyberDb.collection('payments').doc(email).set({
+                    email: email,
+                    reference: reference,
+                    amount: 5000,
+                    currency: 'NGN',
+                    uid: cyberAuth.currentUser.uid,
+                    paidAt: paidAt
+                }, { merge: true });
+                savedEmailRecord = true;
+            } catch (err) {
+                console.error('Could not save payment record:', err);
+            }
+
+            savedProfile = await updateUserData({ hasPaid: true, paymentRef: reference, paidAt: paidAt });
+            hideOverlay();
+
+            if (savedProfile || savedEmailRecord) {
+                alert('✅ Payment successful!\nReference: ' + reference + '\n\nYou will not be asked to pay again with this email.');
+                showView('view-schedule');
+            } else {
+                alert('⚠️ Your payment went through but could not be saved.\n\nPlease keep this reference and contact support on WhatsApp:\n' + reference);
+            }
+        }
+
+        function calculateSchedule() {
+            const hours = document.getElementById('study-hours').value;
+            const completionDate = new Date();
+            completionDate.setDate(completionDate.getDate() + 60);
+            document.getElementById('display-hours').textContent = hours;
+            document.getElementById('completion-date').textContent = completionDate.toDateString();
+            document.getElementById('schedule-result').style.display = 'block';
+            document.getElementById('start-class-btn').style.display = 'block';
+            updateUserData({ hoursPerDay: parseInt(hours) });
+        }
+
+        function startClass() { updateDashboard(); showView('view-dashboard'); }
+
+        function updateDashboard() {
+            if (!currentUserData) return;
+            const progress = (currentUserData.currentDay / currentUserData.totalDays) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `Day ${currentUserData.currentDay} of ${currentUserData.totalDays}`;
+            
+            if (currentUserData.currentDay > 60) {
+                document.getElementById('daily-content').style.display = 'none';
+                document.getElementById('completed-content').style.display = 'block';
+            } else {
+                document.getElementById('daily-content').style.display = 'block';
+                document.getElementById('completed-content').style.display = 'none';
+                const dayData = curriculum[currentUserData.currentDay] || curriculum[1];
+                document.getElementById('teacher-note-day').textContent = currentUserData.currentDay;
+                document.getElementById('topic-of-the-day').textContent = dayData.topic;
+                document.getElementById('teacher-note-text').innerHTML = dayData.note;
+                document.getElementById('external-lesson-link').href = dayData.link;
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function renderQuestion(num, qData) {
+            document.getElementById(`q${num}-label`).textContent = `${num}. ${qData.question}`;
+            document.getElementById(`q${num}-options`).innerHTML = shuffle(qData.options).map(opt =>
+                `<label class="quiz-option"><input type="radio" name="q${num}" value="${opt[1]}"> ${escapeHtml(opt[0])}</label>`
+            ).join('');
+        }
+
+        function loadQuiz() {
+            if (!currentUserData) return;
+            const dayData = curriculum[currentUserData.currentDay] || curriculum[1];
+            document.getElementById('quiz-day').textContent = currentUserData.currentDay;
+            renderQuestion(1, dayData.quiz.q1);
+            renderQuestion(2, dayData.quiz.q2);
+        }
+
+        function submitQuiz(e) {
+            e.preventDefault();
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            
+            if (!q1 || !q2) { 
+                alert('Please answer both questions before submitting.'); 
+                return false; 
+            }
+            
+            if (q1.value === 'correct' && q2.value === 'correct') {
+                alert('🎉 Perfect! Both answers are correct! Now, let\'s test your practical cybersecurity skills.');
+                showView('view-practical');
+            } else {
+                let wrongCount = 0;
+                if (q1.value !== 'correct') wrongCount++;
+                if (q2.value !== 'correct') wrongCount++;
+                alert(`❌ You got ${wrongCount} question(s) wrong. Please review today's lesson and try again.`);
+            }
+            return false;
+        }
+
+        function previewPlaceholder(msg) {
+            return `<p style="font-family: sans-serif; color: #94a3b8; text-align: center; padding-top: 100px;">${msg}</p>`;
+        }
+
+        function loadPracticalChallenge() {
+            if (!currentUserData) return;
+            const dayData = curriculum[currentUserData.currentDay] || curriculum[1];
+            document.getElementById('practical-day').textContent = currentUserData.currentDay;
+            document.getElementById('practical-instruction').innerHTML = dayData.practicalTask;
+            document.getElementById('code-input').value = '';
+            document.getElementById('preview-frame').srcdoc = previewPlaceholder('Your live preview will appear here...');
+        }
+
+        function updatePreview(inputId = 'code-input', frameId = 'preview-frame') {
+            const code = document.getElementById(inputId).value;
+            document.getElementById(frameId).srcdoc = code.trim() ? `<pre style="padding: 15px; white-space: pre-wrap; font-family: 'Courier New', monospace;">${escapeHtml(code)}</pre>` : previewPlaceholder('Start typing to see preview...');
+        }
+
+        async function submitPracticalCode() {
+            if (!currentUserData) return;
+            const code = document.getElementById('code-input').value;
+            if (!code.trim()) { alert('Please write your response before submitting.'); return; }
+            const dayData = curriculum[currentUserData.currentDay] || curriculum[1];
+            const missing = runChecks(dayData.checks, code, dayData.cat);
+
+            if (missing.length === 0) {
+                alert('🚀 Excellent! Your submission passed validation. Day ' + currentUserData.currentDay + ' complete!');
+                await updateUserData({ currentDay: currentUserData.currentDay + 1 });
+                updateDashboard();
+                showView('view-dashboard');
+            } else {
+                alert('⚠️ Validation Failed.\n\nToday\'s lesson is "' + dayData.topic + '", but your submission is missing:\n\n• ' + missing.map(c => c.label).join('\n• ') + '\n\nRead today\'s lesson, update your response and try again.');
+            }
+        }
+
+        function loadFinalExam() {
+            const order = ["network", "vuln", "secure", "hacking"];
+            let total = 0;
+            document.getElementById('final-requirements').innerHTML = order.map(cat => {
+                total += finalGroups[cat].length;
+                return `<h4 style="margin: 12px 0 4px; color: var(--primary);">${catNames[cat]} (${finalGroups[cat].length})</h4><ul class="req-list">${finalGroups[cat].map(c => `<li>${escapeHtml(c.label)}</li>`).join('')}</ul>`;
+            }).join('');
+            document.getElementById('final-req-count').textContent = total;
+            document.getElementById('final-result').innerHTML = '';
+            if (!document.getElementById('final-code-input').value) {
+                document.getElementById('final-preview-frame').srcdoc = previewPlaceholder('Your live preview will appear here...');
+            }
+        }
+
+        async function generateCertificate() {
+            const code = document.getElementById('final-code-input').value;
+            const resultBox = document.getElementById('final-result');
+            if (!code.trim()) { alert('Please write your submission before submitting.'); return; }
+
+            const order = ["network", "vuln", "secure", "hacking"];
+            let total = 0, missingTotal = 0, details = '';
+            order.forEach(cat => {
+                total += finalGroups[cat].length;
+                const missing = runChecks(finalGroups[cat], code, 'final');
+                missingTotal += missing.length;
+                if (missing.length) {
+                    details += `<p style="margin-top: 10px;"><strong>${catNames[cat]}: missing ${missing.length}</strong></p><ul class="req-list">${missing.map(c => `<li>${escapeHtml(c.label)}</li>`).join('')}</ul>`;
+                }
+            });
+
+            if (missingTotal > 0) {
+                resultBox.innerHTML = `<div class="result-box result-fail"><strong>❌ Not yet. Your submission meets ${total - missingTotal} of ${total} requirements.</strong> Add the missing items below and submit again.${details}</div>`;
+                resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                return;
+            }
+
+            resultBox.innerHTML = '';
+            const certId = 'ABN-CYBER-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            await updateUserData({ currentDay: 61, certId: certId, certDate: new Date().toISOString() });
+            renderCertificate();
+            showView('view-certificate');
+        }
+
+        function renderCertificate() {
+            if (!currentUserData) return;
+            const formattedName = currentUserData.name.charAt(0).toUpperCase() + currentUserData.name.slice(1);
+            const certId = currentUserData.certId || 'ABN-PENDING';
+            const awardDate = currentUserData.certDate ? new Date(currentUserData.certDate) : new Date();
+
+            document.getElementById('cert-name').textContent = formattedName;
+            document.getElementById('cert-date').textContent = awardDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('cert-id').textContent = 'ID: ' + certId;
+
+            const verifyUrl = `https://abnwebtech.online/verify?id=${encodeURIComponent(certId)}&student=${encodeURIComponent(formattedName)}`;
+            const box = document.getElementById('qrcode');
+            box.innerHTML = '';
+            try {
+                if (typeof QRCode === 'undefined') throw new Error('QR library not loaded');
+                new QRCode(box, { text: verifyUrl, width: 256, height: 256, colorDark: '#1e293b', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+            } catch (err) {
+                console.error('QR code error:', err);
+                box.innerHTML = '<span class="qr-fallback">abnwebtech.online/verify</span>';
+            }
+        }
+
+        function loadChat() {
+            const chatContainer = document.getElementById('chat-messages');
+            if (!cyberAuth.currentUser) return;
+            if (chatUnsubscribe) chatUnsubscribe();
+
+            chatUnsubscribe = cyberDb.collection('chats').orderBy('timestamp', 'asc').onSnapshot((snapshot) => {
+                chatContainer.innerHTML = '';
+                if (snapshot.empty) {
+                    chatContainer.innerHTML = '<p style="text-align: center; color: var(--gray);">No messages yet. Be the first to say hi!</p>';
+                    return;
+                }
+                snapshot.forEach((doc) => {
+                    const msg = doc.data();
+                    const isMe = msg.userId === cyberAuth.currentUser.uid;
+                    const msgDiv = document.createElement('div');
+                    msgDiv.style.cssText = `margin-bottom: 10px; padding: 10px 15px; border-radius: 12px; max-width: 85%; ${isMe ? 'background: #dbeafe; margin-left: auto; text-align: right; border-bottom-right-radius: 2px;' : 'background: #f1f5f9; margin-right: auto; text-align: left; border-bottom-left-radius: 2px;'}`;
+                    msgDiv.innerHTML = `<strong style="font-size: 0.8rem; color: var(--primary); display: block; margin-bottom: 4px;">${escapeHtml(msg.userName || 'Student')}</strong><p style="margin: 0; font-size: 0.95rem; word-wrap: break-word; color: #1e293b;">${escapeHtml(msg.text)}</p>`;
+                    chatContainer.appendChild(msgDiv);
+                });
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            });
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text || !cyberAuth.currentUser) return;
+
+            await cyberDb.collection('chats').add({
+                text: text,
+                userName: currentUserData.name || 'Student',
+                userId: cyberAuth.currentUser.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            input.value = '';
+        }
+    </script>
+    
+    <a href="https://wa.me/2349152004538?text=Hi!%20I%20visited%20the%20ABN%20Academy%20website%20and%20want%20to%20know%20more%20about%20the%20Cyber%20Security%20course." 
+       class="whatsapp-float" target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.004 0h-.008C7.174 0 0 7.176 0 16c0 3.5 1.128 6.744 3.046 9.378L1.054 31.29l6.118-1.958C9.72 31.076 12.738 32 16.004 32 24.826 32 32 24.822 32 16S24.826 0 16.004 0zm9.336 22.594c-.39 1.1-1.932 2.014-3.168 2.28-.846.18-1.95.324-5.67-1.222-4.762-1.972-7.826-6.81-8.064-7.124-.23-.314-1.932-2.572-1.932-4.904 0-2.332 1.222-3.476 1.658-3.952.39-.43 1.032-.614 1.646-.614.198 0 .376.01.536.018.476.02.714.048 1.026.792.39.93 1.34 3.262 1.458 3.502.12.24.24.556.078.87-.152.322-.286.464-.526.738-.24.274-.464.482-.704.774-.22.256-.468.53-.198.998.27.46 1.202 1.982 2.58 3.21 1.77 1.58 3.264 2.07 3.724 2.3.46.23.728.19.998-.114.278-.314 1.18-1.376 1.496-1.852.308-.476.624-.396 1.054-.238.436.152 2.762 1.302 3.236 1.54.474.238.79.356.906.552.114.196.114 1.136-.276 2.236z"/>
+        </svg>
+    </a>
+
+</body>
+</html>
