@@ -172,7 +172,7 @@
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="login-password" class="form-control" placeholder="••••••••">
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" onkeypress="if(event.key === 'Enter') handleAuth()">
                 </div>
                 <button class="btn" id="auth-btn" onclick="handleAuth()">Login to Classroom</button>
                 <div class="auth-toggle">
@@ -198,6 +198,8 @@
                     <li>Day 60: Issuing of completion of course certificate</li>
                 </ul>
                 <button class="btn btn-success" onclick="initiatePayment()">💳 Pay Securely with Paystack</button>
+                <p style="text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--gray);">Already paid with this email? <a onclick="recheckPayment()" style="color: var(--primary); cursor: pointer; font-weight: 600;">Click here to check your payment</a></p>
+                <button class="btn btn-outline" style="width: auto; margin: 15px auto 0; display: block; font-size: 0.9rem;" onclick="logout()">Logout</button>
             </div>
         </div>
 
@@ -825,12 +827,41 @@
             };
         }
 
-        auth.onAuthStateChanged((user) => {
+        // ======================================================================
+        // AUTH + PAYMENT ACCESS
+        // Rule: once an email has paid, every login with that email goes straight
+        // to the classroom. Payment is remembered in TWO places:
+        //   1) users/{uid}          -> hasPaid: true
+        //   2) payments/{email}     -> permanent record keyed by the email address
+        // If the user document is ever missing or says hasPaid:false, the payments
+        // record is checked and the account is automatically unlocked.
+        // ======================================================================
+
+        function emailKey(email) {
+            return String(email || '').trim().toLowerCase();
+        }
+
+        function showOverlay(msg) {
+            const o = document.getElementById('loading-overlay');
+            o.textContent = msg;
+            o.style.display = 'flex';
+        }
+
+        function hideOverlay() {
             document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        auth.onAuthStateChanged(async (user) => {
             if (user) {
                 console.log("✅ User is currently logged in as:", user.email);
-                fetchUserData(user.uid);
+                // Keep the overlay up until we know whether this email has paid,
+                // so a paid student never sees the payment screen flash.
+                showOverlay('Checking your account...');
+                await fetchUserData(user.uid);
+                hideOverlay();
             } else {
+                currentUserData = null;
+                hideOverlay();
                 showView('view-login');
             }
         });
@@ -844,56 +875,84 @@
         }
 
         async function handleAuth() {
-            const email = document.getElementById('login-email').value;
+            const email = emailKey(document.getElementById('login-email').value);
             const password = document.getElementById('login-password').value;
             if (!email.includes('@') || password.length < 6) {
                 alert('Please enter a valid email and a password of at least 6 characters.');
                 return;
             }
-            document.getElementById('loading-overlay').style.display = 'flex';
-            document.getElementById('loading-overlay').textContent = isLoginMode ? 'Logging in...' : 'Creating account...';
+            showOverlay(isLoginMode ? 'Logging in...' : 'Creating account...');
             try {
-                let userCredential;
                 if (isLoginMode) {
-                    userCredential = await auth.signInWithEmailAndPassword(email, password);
+                    await auth.signInWithEmailAndPassword(email, password);
                 } else {
-                    userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                    const name = email.split('@')[0].replace('.', ' ');
-                    await db.collection('users').doc(userCredential.user.uid).set({
-                        email: email, name: name, hasPaid: false, hoursPerDay: 2, currentDay: 1, totalDays: 60, certId: null,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    // The user profile is created in fetchUserData (called by onAuthStateChanged),
+                    // which also checks whether this email has already paid.
+                    await auth.createUserWithEmailAndPassword(email, password);
                 }
+                // onAuthStateChanged takes over from here and hides the overlay.
             } catch (error) {
-                document.getElementById('loading-overlay').style.display = 'none';
+                hideOverlay();
                 alert('Authentication Error: ' + error.message);
             }
         }
 
+        // Loads the student's profile, creates it if missing, and unlocks the
+        // account if this email has a payment record.
         async function fetchUserData(uid) {
             try {
-                const doc = await db.collection('users').doc(uid).get();
-                if (doc.exists) {
-                    currentUserData = doc.data();
-                    updateUIBasedOnState();
-                } else {
-                    alert('User data not found. Please contact support.');
-                    logout();
+                const user = auth.currentUser;
+                const email = emailKey(user.email);
+                const userRef = db.collection('users').doc(uid);
+
+                let snap = await userRef.get();
+                if (!snap.exists) {
+                    await userRef.set({
+                        email: email,
+                        name: email.split('@')[0].replace('.', ' '),
+                        hasPaid: false, hoursPerDay: 2, currentDay: 1, totalDays: 60, certId: null,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    snap = await userRef.get();
                 }
+
+                let data = snap.data();
+
+                // Not marked as paid on the profile? Look for a payment made with this email.
+                if (!data.hasPaid) {
+                    try {
+                        const pay = await db.collection('payments').doc(email).get();
+                        if (pay.exists) {
+                            const ref = pay.data().reference || null;
+                            await userRef.set({ hasPaid: true, paymentRef: ref }, { merge: true });
+                            data = { ...data, hasPaid: true, paymentRef: ref };
+                            console.log('✅ Payment record found for', email, '- account unlocked.');
+                        }
+                    } catch (payErr) {
+                        console.warn('Payment lookup failed:', payErr);
+                    }
+                }
+
+                currentUserData = data;
+                updateUIBasedOnState();
             } catch (error) {
                 console.error("Error fetching user data:", error);
-                alert('Error loading your data. Please refresh.');
+                alert('Error loading your data. Please check your internet connection and refresh.');
             }
         }
 
+        // Saves changes to the user's profile. Uses set+merge so it never fails
+        // because the document is missing. Returns true on success.
         async function updateUserData(updates) {
-            if (!auth.currentUser) return;
+            if (!auth.currentUser) return false;
             try {
-                await db.collection('users').doc(auth.currentUser.uid).update(updates);
+                await db.collection('users').doc(auth.currentUser.uid).set(updates, { merge: true });
                 currentUserData = { ...currentUserData, ...updates };
+                return true;
             } catch (error) {
                 console.error("Error updating user data:", error);
                 alert('Error saving progress. Please check your internet connection.');
+                return false;
             }
         }
 
@@ -907,6 +966,7 @@
                 renderCertificate();
                 showView('view-certificate');
             } else if (currentUserData.hasPaid) {
+                // PAID: go straight into the classroom, never ask for payment again
                 updateDashboard();
                 showView('view-dashboard');
             } else {
@@ -914,12 +974,22 @@
             }
         }
 
+        // "Already paid?" link on the enrollment page: re-checks the payment record
+        async function recheckPayment() {
+            if (!auth.currentUser) return;
+            showOverlay('Checking your payment...');
+            await fetchUserData(auth.currentUser.uid);
+            hideOverlay();
+            if (currentUserData && !currentUserData.hasPaid) {
+                alert('No payment was found for ' + emailKey(auth.currentUser.email) + '.\n\nIf you paid with a different email, log in with that email. Otherwise contact support on WhatsApp with your payment reference.');
+            }
+        }
+
         async function logout() {
-            document.getElementById('loading-overlay').style.display = 'flex';
-            document.getElementById('loading-overlay').textContent = 'Logging out...';
+            showOverlay('Logging out...');
             if (chatUnsubscribe) { chatUnsubscribe(); chatUnsubscribe = null; }
             await auth.signOut();
-            document.getElementById('loading-overlay').style.display = 'none';
+            hideOverlay();
         }
 
         function showView(viewId) {
@@ -934,15 +1004,23 @@
         }
 
         function initiatePayment() {
-            if (!currentUserData) { alert('Please log in first to proceed with payment.'); return; }
+            if (!currentUserData || !auth.currentUser) { alert('Please log in first to proceed with payment.'); return; }
+
+            // Safety: never charge someone who has already paid
+            if (currentUserData.hasPaid) {
+                updateDashboard();
+                showView('view-dashboard');
+                return;
+            }
+
+            const email = emailKey(auth.currentUser.email);
             try {
                 let handler = PaystackPop.setup({
                     key: 'pk_live_e8b893fa426ea57e8090d77b75bc4430cd88c4b9', 
-                    email: currentUserData.email, amount: 5000 * 100, currency: 'NGN',
+                    email: email, amount: 5000 * 100, currency: 'NGN',
                     ref: 'ABN_LMS_' + Math.floor((Math.random() * 1000000000) + 1),
                     callback: function(response) {
-                        alert('✅ Payment successful!\nReference: ' + response.reference);
-                        updateUserData({ hasPaid: true }).then(() => showView('view-schedule'));
+                        recordPayment(email, response.reference);
                     },
                     onClose: function() { console.log('Payment window closed by user.'); }
                 });
@@ -950,6 +1028,40 @@
             } catch (error) {
                 console.error("Paystack Initialization Error:", error);
                 alert("Could not load payment window.\n\nError: " + error.message);
+            }
+        }
+
+        // Saves the payment permanently against the EMAIL and the user profile
+        async function recordPayment(email, reference) {
+            showOverlay('Saving your payment...');
+            const paidAt = new Date().toISOString();
+            let savedProfile = false, savedEmailRecord = false;
+
+            // 1) Permanent record keyed by email (survives even if the profile is lost)
+            try {
+                await db.collection('payments').doc(email).set({
+                    email: email,
+                    reference: reference,
+                    amount: 5000,
+                    currency: 'NGN',
+                    uid: auth.currentUser.uid,
+                    paidAt: paidAt
+                }, { merge: true });
+                savedEmailRecord = true;
+            } catch (err) {
+                console.error('Could not save payment record:', err);
+            }
+
+            // 2) Mark the profile as paid
+            savedProfile = await updateUserData({ hasPaid: true, paymentRef: reference, paidAt: paidAt });
+
+            hideOverlay();
+
+            if (savedProfile || savedEmailRecord) {
+                alert('✅ Payment successful!\nReference: ' + reference + '\n\nYou will not be asked to pay again with this email.');
+                showView('view-schedule');
+            } else {
+                alert('⚠️ Your payment went through but could not be saved.\n\nPlease keep this reference and contact support on WhatsApp:\n' + reference);
             }
         }
 
@@ -986,7 +1098,7 @@
             }
         }
 
-        // ---------- QUIZ (fixed: option text is escaped so <a>, <img>, <br> etc. are visible) ----------
+        // ---------- QUIZ (option text is escaped so <a>, <img>, <br> etc. are visible) ----------
         function escapeHtml(str) {
             return String(str)
                 .replace(/&/g, '&amp;')
@@ -1142,7 +1254,7 @@
             }
         }
 
-        // ---------- REAL-TIME STUDENT GROUP CHAT (fixed: no listener leak, no XSS) ----------
+        // ---------- REAL-TIME STUDENT GROUP CHAT ----------
         function loadChat() {
             const chatContainer = document.getElementById('chat-messages');
             if (!auth.currentUser) return;
